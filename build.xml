@@ -1,0 +1,19 @@
+<project name="clj-backtrace" default="jar">
+  <description>
+    Pack all sources into a JAR.
+  </description>
+
+  <property name="jarfile" location="clj-backtrace.jar"/>
+
+  <target name="clean"
+          description="Remove generated files and directories.">
+    <delete file="${jarfile}"/>
+  </target>
+
+  <target name="jar"
+          description="Create jar file.">
+    <jar jarfile="${jarfile}">
+      <fileset dir="./src" includes="clj_backtrace/**/*.clj"/>
+    </jar>
+  </target>
+</project>
