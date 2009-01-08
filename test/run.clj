@@ -1,4 +1,2 @@
 (use 'clj-unit.core)
-(require 'clj-backtrace.core-test)
-
-(run-tests '(clj-backtrace.core-test))
+(require-and-run-tests '(clj-backtrace.core-test clj-backtrace.repl-test))

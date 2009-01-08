@@ -6,13 +6,13 @@
     (str (:file parsed) ":" (:line parsed))
     "(Unknown Source)"))
 
-(defn- clojure-method-str [parsed]
+(defn clojure-method-str [parsed]
   (str (:ns parsed) "/" (:fn parsed) (if (:annon-fn parsed) "[fn]")))
 
 (defn java-method-str [parsed]
   (str (:class parsed) "." (:method parsed)))
 
-(defn- method-str [parsed]
+(defn method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
 (defn print-trace-elems
@@ -44,7 +44,7 @@
         this-source-width)))
 
 (defn pst
-  "Print a pretty stack trace for an exception, by default *e."
+  "Print to *out* a pretty stack trace for an exception, by default *e."
   [& [e]]
   (let [exec      (parse-exception (or e *e))
         source-width (find-source-width exec)]
@@ -52,6 +52,11 @@
     (print-trace-elems (:trace-elems exec) source-width)
     (if-let [cause (:cause exec)]
       (pst-cause cause source-width))))
+
+(defn pst-str
+  "Like pst, but returns a string instead of printing that string to *out*"
+  [& [e]]
+  (with-out-str (pst (or e *e))))
 
 (defmacro with-pst
   "Wrap code in a guard that will print pretty stack traces instead of default
