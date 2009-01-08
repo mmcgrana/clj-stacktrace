@@ -51,9 +51,10 @@
   (assert= (map second cases) (parse-trace-elems (map first cases))))
 
 (deftest "trim-redundant"
-  (assert= '(d c) (trim-redundant '(d c b a) '(f e b a)))
-  (assert= '(c)   (trim-redundant '(c b a)   '(f e b a)))
-  (assert= '(d c) (trim-redundant '(d c b a) '(e b a))))
+  (let [trim-fn (resolve 'clj-backtrace.core/trim-redundant)]
+    (assert= '(d c) (trim-fn '(d c b a) '(f e b a)))
+    (assert= '(c)   (trim-fn '(c b a)   '(f e b a)))
+    (assert= '(d c) (trim-fn '(d c b a) '(e b a)))))
 
 (deftest "parse-exception"
   (try

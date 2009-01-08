@@ -38,12 +38,17 @@
 
 (defn parse-trace-elem
   "Returns a map of information about the java trace element.
-  For all elements:
-  {:file <source file name> :line <source line>}
+  All returned maps have the keys:
+  :file      String of source file name. 
+  :line      Number of source line number of the enclosing form.
   Additionally for elements from Java code:
-  {:java true :class <class-name> :method <method-name>}
+  :java      true, to indicate a Java elem. 
+  :class     String of the name of the class to which the method belongs.
   Additionally for elements from Clojure code:
-  {:clojure true :ns <ns-name> :fn <fn name> :annon-fn <true|false>}"
+  :clojure   true, to inidcate a Clojure elem. 
+  :ns        String representing the namespace of the function.
+  :fn        String representing the name of the enclosing var for the function. 
+  :annon-fn  true iff the function is an anonymous inner fn."
   [elem]
   (let [class-name (.getClassName elem)
         file       (.getFileName  elem)
@@ -62,11 +67,11 @@
 
 (defn parse-trace-elems
   "Returns a seq of maps providing usefull information about the java stack
-  trace elements."
+  trace elements. See parse-trace-elem."
   [elems]
   (map parse-trace-elem elems))
 
-(defn trim-redundant
+(defn- trim-redundant
   "Returns the portion of the tail of causer-elems that is not duplicated in 
   the tail of caused-elems. This corresponds to the \"...26 more\" that you
   see at the bottom of regular trace dumps."
@@ -79,7 +84,11 @@
         (reverse rcauser-parsed-elems)))))
 
 (defn- parse-cause-exception
-  "Like parse-exception, but for causing exceptions."
+  "Like parse-exception, but for causing exceptions. The returned map has all
+  of the same keys as the map returned by parse-exception, and one added one:
+  :trimmed-elems  A subset of :trace-elems representing the portion of the
+                  top of the stacktrace not shared with that of the caused
+                  exception."
   [causer-e caused-parsed-elems]
   (let [parsed-elems (parse-trace-elems (.getStackTrace causer-e))
         base {:class         (class causer-e)
@@ -91,8 +100,12 @@
       base)))
 
 (defn parse-exception
-  "Returns a Clojure data structure providing usefull informaiton about the
-  exception, its stack trace elements, and its causes."
+  "Returns a Clojure map providing usefull informaiton about the exception.
+  The map has keys
+  :class        Class of the exception.
+  :message      Regular exception message string.
+  :trace-elems  Parsed stack trace elems, see parse-trace-elem.
+  :cause        See parse-cause-exception."
   [e]
   (let [parsed-elems (parse-trace-elems (.getStackTrace e))
         base {:class       (class e)
