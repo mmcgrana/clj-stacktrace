@@ -58,4 +58,4 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 
 ---
 
-Copyright 2008 Mark McGranaghan and released under an MIT license.
+Copyright 2009 Mark McGranaghan and released under an MIT license.
