@@ -1,6 +1,35 @@
 (ns clj-backtrace.repl
   (:use (clj-backtrace core utils)))
 
+(def *use-color* false)
+
+(def color-codes
+  {:red     "\033[31m"
+   :green   "\033[32m"
+   :yellow  "\033[33m"
+   :blue    "\033[34m"
+   :magenta "\033[35m"
+   :cyan    "\033[36m"
+   :default "\033[39m"})
+
+(defn with-color
+  [color text]
+  (if *use-color*
+    (str (color-codes color) text (color-codes :default))
+    text))
+
+(defn elem-color
+  [elem]
+  (cond
+    (:java elem)
+      :green
+    (or (nil? (:ns elem)) (re-match? #"^(user|repl)" (:ns elem)))
+      :magenta
+    (re-match? #"^clojure\." (:ns elem))
+      :blue
+    :else
+      :default))
+
 (defn source-str [parsed]
   (if (and (:file parsed) (:line parsed))
     (str (:file parsed) ":" (:line parsed))
@@ -22,13 +51,14 @@
           (+ 6 (or source-width
                    (high (map (memfn length) (map source-str parsed-elems)))))]
     (doseq [parsed-elem parsed-elems]
-      (println (str (rjust print-width (source-str parsed-elem))
-                    " " (method-str parsed-elem))))))
+      (println (with-color (elem-color parsed-elem)
+                 (str (rjust print-width (source-str parsed-elem))
+                      " " (method-str parsed-elem)))))))
 
 (defn- pst-cause
   "Print a pretty stack trace for a parsed exception in a causal chain."
   [exec source-width]
-  (println (str "Caused by: " (:message exec)))
+  (println (with-color :red (str "Caused by: " (:message exec))))
   (print-trace-elems (:trimmed-elems exec) source-width)
   (if-let [cause (:cause exec)]
     (pst-cause cause source-width)))
@@ -48,7 +78,7 @@
   [& [e]]
   (let [exec      (parse-exception (or e *e))
         source-width (find-source-width exec)]
-    (println (:message exec))
+    (println (with-color :red (:message exec)))
     (print-trace-elems (:trace-elems exec) source-width)
     (if-let [cause (:cause exec)]
       (pst-cause cause source-width))))
@@ -57,6 +87,13 @@
   "Like pst, but returns a string instead of printing that string to *out*"
   [& [e]]
   (with-out-str (pst (or e *e))))
+
+(defn pst+
+  "Experimenal. Like pst, but with ANSI terminal color coding.
+  Prints ..."
+  [& [e]]
+  (binding [*use-color* true]
+    (pst e)))
 
 (defmacro with-pst
   "Wrap code in a guard that will print pretty stack traces instead of default
