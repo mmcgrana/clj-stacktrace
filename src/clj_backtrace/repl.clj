@@ -13,12 +13,20 @@
    :default "\033[39m"})
 
 (defn with-color
+  "If *use-color* is bound to logical truth, returns text surrounded by 
+  strings that will turn the text the given color and then reset the color
+  to default. Otherwise returns the given string."
   [color text]
   (if *use-color*
     (str (color-codes color) text (color-codes :default))
     text))
 
 (defn elem-color
+  "Returns a symbol identifying the color appropriate for the given trace elem.
+  :green   All Java elems
+  :magenta Any fn in the user or repl* namespaces (i.e. entered at REPL)
+  :blue    Any fn in clojure.* (e.g. clojure.core, clojure.contrib.*)
+  :default Anything else - i.e. Clojure libraries and app code."
   [elem]
   (cond
     (:java elem)
@@ -94,11 +102,3 @@
   [& [e]]
   (binding [*use-color* true]
     (pst e)))
-
-(defmacro with-pst
-  "Wrap code in a guard that will print pretty stack traces instead of default
-  Java traces on exceptions"
-  [& body]
-  `(try
-     ~@body
-     (catch Exception e# (pst e#))))
