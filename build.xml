@@ -1,7 +1,5 @@
 <project name="clj-backtrace" default="jar">
-  <description>
-    Pack all sources into a JAR.
-  </description>
+  <description> Pack all sources into a JAR. </description>
 
   <property name="jarfile" location="clj-backtrace.jar"/>
 
