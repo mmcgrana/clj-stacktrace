@@ -5,14 +5,13 @@
 
   <property name="jarfile" location="clj-backtrace.jar"/>
 
-  <target name="clean"
-          description="Remove generated files and directories.">
+  <target name="clean" description="Remove generated files and directories.">
     <delete file="${jarfile}"/>
   </target>
 
-  <target name="jar"
-          description="Create jar file.">
+  <target name="jar" description="Create jar file.">
     <jar jarfile="${jarfile}">
+      <path location="LICENSE"/>
       <fileset dir="./src" includes="clj_backtrace/**/*.clj"/>
     </jar>
   </target>
