@@ -5,7 +5,7 @@
   "Execute body in the context of a variable bound to an exception instance
   that includes a caused-by cascade."
   [binding-sym & body]
-  `(try (first (lazy-cons (/) :rest))
+  `(try (first (lazy-seq (cons (/) nil)))
      (catch Exception e#
        (let [~binding-sym e#]
          ~@body))))

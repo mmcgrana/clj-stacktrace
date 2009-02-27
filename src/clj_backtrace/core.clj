@@ -80,7 +80,7 @@
          rcaused-parsed-elems (reverse caused-parsed-elems)]
     (if-let [rcauser-bottom (first rcauser-parsed-elems)]
       (if (= rcauser-bottom (first rcaused-parsed-elems))
-        (recur (rest rcauser-parsed-elems) (rest rcaused-parsed-elems))
+        (recur (next rcauser-parsed-elems) (next rcaused-parsed-elems))
         (reverse rcauser-parsed-elems)))))
 
 (defn- parse-cause-exception
