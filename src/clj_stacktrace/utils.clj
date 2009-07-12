@@ -1,5 +1,5 @@
-(ns clj-backtrace.utils
-  (:use clojure.contrib.str-utils))
+(ns clj-stacktrace.utils
+  (:use (clojure.contrib str-utils)))
 
 (defn mash
   "Reduce a seq-able to a map. The given fn should return a 2-element tuple

@@ -1,5 +1,5 @@
-(ns clj-backtrace.repl
-  (:use (clj-backtrace core utils)))
+(ns clj-stacktrace.repl
+  (:use (clj-stacktrace core utils)))
 
 (def *use-color* false)
 
@@ -97,8 +97,7 @@
   (with-out-str (pst (or e *e))))
 
 (defn pst+
-  "Experimenal. Like pst, but with ANSI terminal color coding.
-  Prints ..."
+  "Experimenal. Like pst, but with ANSI terminal color coding."
   [& [e]]
   (binding [*use-color* true]
     (pst e)))

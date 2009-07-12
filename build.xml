@@ -1,7 +1,7 @@
-<project name="clj-backtrace" default="jar">
+<project name="clj-stacktrace" default="jar">
   <description> Pack all sources into a JAR. </description>
 
-  <property name="jarfile" location="clj-backtrace.jar"/>
+  <property name="jarfile" location="clj-stacktrace.jar"/>
 
   <target name="clean" description="Remove generated files and directories.">
     <delete file="${jarfile}"/>
@@ -10,7 +10,7 @@
   <target name="jar" description="Create jar file.">
     <jar jarfile="${jarfile}">
       <path location="LICENSE"/>
-      <fileset dir="./src" includes="clj_backtrace/**/*.clj"/>
+      <fileset dir="./src" includes="clj_stacktrace/**/*.clj"/>
     </jar>
   </target>
 </project>

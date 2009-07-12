@@ -1,5 +1,6 @@
-(ns clj-backtrace.core-test
-  (:use clj-unit.core (clj-backtrace core utils)))
+(ns clj-stacktrace.core-test
+  (:use (clj-unit core)
+        (clj-stacktrace core utils)))
 
 (def cases-data
   [["foo.bar$biz__123" "invoke" "bar.clj" 456

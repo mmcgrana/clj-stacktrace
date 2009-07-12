@@ -1,6 +1,6 @@
-(ns clj-backtrace.core
-  (:use clojure.contrib.str-utils)
-  (:use clj-backtrace.utils))
+(ns clj-stacktrace.core
+  (:use (clojure.contrib str-utils)
+        (clj-stacktrace utils)))
 
 (defn- clojure-code?
   "Returns true if the filename is non-null and indicates a clj source file."

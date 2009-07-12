@@ -1,13 +1,13 @@
-h2. clj-backtrace
+h2. clj-stacktrace
 
-clj-backtrace is a library for creating more readable backtraces in Clojure programs.
+clj-stacktrace is a library for creating more readable stacktraces in Clojure programs.
 
-To install, build using <code>ant</code> and include the resulting <code>clj-backtrace.jar</code> in your classpath.
+To install, build using <code>ant</code> and include the resulting <code>clj-stacktrace.jar</code> in your classpath.
 
-One use for clj-backtrace is it to print stack traces from the REPL:
+One use for clj-stacktrace is it to print stack traces from the REPL:
 
 <pre><code>
-=> (use 'clj-backtrace.repl)
+=> (use 'clj-stacktrace.repl)
 => ("foo")
 java.lang.ClassCastException: java.lang.String
 user=> (pst)  ;instead of (.printStackTrace *e) 
@@ -45,12 +45,12 @@ In stack traces printed by <code>pst</code>:
 * Elements are vertically aligned for better readability.
 * Printing is directed to <code>*out*</code>.
 
-If you want to direct the printing to somewhere other than stdout, either dynamically rebind <code>*out*</code> to the desired location or use <code>(pst-str e)</code> to capture the backtrace dump as a string.
+If you want to direct the printing to somewhere other than stdout, either dynamically rebind <code>*out*</code> to the desired location or use <code>(pst-str e)</code> to capture the stacktrace dump as a string.
 
 The library also offers an API for programatically 'parsing' exceptions. This API is used internal for <code>pst</code> and can be used to e.g. improve development tools. Try for example:
 
 <pre><code>
-=> (use '(clj-backtrace core repl))
+=> (use '(clj-stacktrace core repl))
 => (try ("foo") 
      (catch Exception e 
        (print-trace-elems (take 5 (:trace-elems (parse-exception e))))))

@@ -1,5 +1,6 @@
-(ns clj-backtrace.repl-test
-  (:use clj-unit.core clj-backtrace.repl))
+(ns clj-stacktrace.repl-test
+  (:use (clj-unit core)
+        (clj-stacktrace repl)))
 
 (defmacro with-cascading-exception
   "Execute body in the context of a variable bound to an exception instance
