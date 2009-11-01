@@ -1,6 +1,6 @@
 (ns clj-stacktrace.repl-test
   (:use (clj-unit core)
-        (clj-stacktrace repl)))
+        (clj-stacktrace repl utils)))
 
 (defmacro with-cascading-exception
   "Execute body in the context of a variable bound to an exception instance
@@ -11,7 +11,13 @@
        (let [~binding-sym e#]
          ~@body))))
 
-(deftest "pst, pst-str"
+(deftest "pst"
+  (with-cascading-exception e
+    (assert-that (with-out-str (pst e)))
+    (binding [*e e]
+      (assert-that (with-out-str (pst))))))
+
+(deftest "pst"
   (with-cascading-exception e
     (assert-that (pst-str e))
     (binding [*e e]
@@ -19,8 +25,6 @@
 
 (deftest "pst+"
   (with-cascading-exception e
-    (assert-not=
-      (pst-str e)
-      (with-out-str (pst+ e)))
+    (assert-that (with-out-str (pst+ e)))
     (binding [*e e]
       (assert-that (with-out-str (pst+))))))

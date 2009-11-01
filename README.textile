@@ -45,15 +45,15 @@ In stack traces printed by <code>pst</code>:
 * Elements are vertically aligned for better readability.
 * Printing is directed to <code>*out*</code>.
 
-If you want to direct the printing to somewhere other than stdout, either dynamically rebind <code>*out*</code> to the desired location or use <code>(pst-str e)</code> to capture the stacktrace dump as a string.
+If you want to direct the printing to somewhere other than <code>*out*</code>, either use <code>pst-on</code> to specify the output location or <code>pst-str</code> to capture the printing as a string.
 
 The library also offers an API for programatically 'parsing' exceptions. This API is used internal for <code>pst</code> and can be used to e.g. improve development tools. Try for example:
 
 <pre><code>
-=> (use '(clj-stacktrace core repl))
-=> (try ("foo") 
+=> (use '(clj-stacktrace core))
+=> (try (nofn) 
      (catch Exception e 
-       (print-trace-elems (take 5 (:trace-elems (parse-exception e))))))
+       (prn (take 5 (:trace-elems (parse-exception e))))))
 </code></pre>
 
 ---
