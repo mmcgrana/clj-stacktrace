@@ -51,9 +51,10 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 
 <pre><code>
 => (use '(clj-stacktrace core))
-=> (try (nofn) 
-     (catch Exception e 
-       (prn (take 5 (:trace-elems (parse-exception e))))))
+=> (try
+     ("nofn")
+     (catch Exception e
+       (parse-exception e)))
 </code></pre>
 
 ---
