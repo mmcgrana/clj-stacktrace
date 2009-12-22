@@ -23,15 +23,19 @@
   :blue    Any fn in clojure.* (e.g. clojure.core, clojure.contrib.*)
   :magenta Anything else - i.e. Clojure libraries and app code."
   [elem]
-  (cond
-    (:java elem)
-      :green
-    (or (nil? (:ns elem)) (re-match? #"^(user|repl)" (:ns elem)))
-      :yellow
-    (re-match? #"^clojure\." (:ns elem))
-      :blue
-    :else
-      :magenta))
+  (if (:java elem)
+    (if (re-match? #"^clojure\." (:class elem))
+      :cyan
+      :blue)
+    (cond
+      (nil? (:ns elem))
+        :yellow
+      (re-match? #"^(user|repl)" (:ns elem))
+        :yellow
+      (re-match? #"^clojure\." (:ns elem))
+        :magenta
+      :user-code
+        :green)))
 
 (defn source-str [parsed]
   (if (and (:file parsed) (:line parsed))
