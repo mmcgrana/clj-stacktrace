@@ -1,5 +1,6 @@
 (ns clj-stacktrace.repl
-  (:use (clj-stacktrace core utils)))
+  (:use clj-stacktrace.core)
+  (:require [clj-stacktrace.utils :as utils]))
 
 (def color-codes
   {:red     "\033[31m"
@@ -24,15 +25,15 @@
   :magenta Anything else - i.e. Clojure libraries and app code."
   [elem]
   (if (:java elem)
-    (if (re-match? #"^clojure\." (:class elem))
+    (if (utils/re-match? #"^clojure\." (:class elem))
       :cyan
       :blue)
     (cond
       (nil? (:ns elem))
         :yellow
-      (re-match? #"^(user|repl)" (:ns elem))
+      (utils/re-match? #"^(user|repl)" (:ns elem))
         :yellow
-      (re-match? #"^clojure\." (:ns elem))
+      (utils/re-match? #"^clojure\." (:ns elem))
         :magenta
       :user-code
         :green)))
@@ -60,11 +61,12 @@
   [on color? parsed-elems & [source-width]]
   (let [print-width
           (+ 6 (or source-width
-                   (high (map (memfn length) (map source-str parsed-elems)))))]
+                   (utils/high (map (memfn length)
+                                    (map source-str parsed-elems)))))]
     (doseq [parsed-elem parsed-elems]
       (.append on
         (colored color? (elem-color parsed-elem)
-          (str (rjust print-width (source-str parsed-elem))
+          (str (utils/rjust print-width (source-str parsed-elem))
                " " (method-str parsed-elem))))
       (.append on "\n")
       (.flush on))))
@@ -81,7 +83,8 @@
   excp and its causes."
   [excp]
     (let [this-source-width
-            (high (map (memfn length) (map source-str (:trace-elems excp))))]
+            (utils/high (map (memfn length)
+                             (map source-str (:trace-elems excp))))]
       (if-let [cause (:cause excp)]
         (max this-source-width (find-source-width cause))
         this-source-width)))

@@ -1,5 +1,5 @@
 (ns clj-stacktrace.utils
-  (:use (clojure.contrib str-utils)))
+  (:require [clojure.contrib.str-utils :as str]))
 
 (defn mash
   "Reduce a seq-able to a map. The given fn should return a 2-element tuple
@@ -14,7 +14,7 @@
 (defn re-without
   "Returns a String with the given pattern re-gsub'd out the given string."
   [pattern string]
-  (re-gsub pattern "" string))
+  (str/re-gsub pattern "" string))
 
 (defn re-match?
   "Returns true iff the given string contains a match for the given pattern."

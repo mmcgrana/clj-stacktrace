@@ -1,16 +1,17 @@
 (ns clj-stacktrace.core
-  (:use (clojure.contrib str-utils)
-        (clj-stacktrace utils)))
+  (:require [clojure.contrib.str-utils :as str]
+            [clj-stacktrace.utils :as utils]))
 
 (defn- clojure-code?
   "Returns true if the filename is non-null and indicates a clj source file."
   [class-name file]
-  (or (re-match? #"^user" class-name) (and file (re-match? #"\.clj$" file))))
+  (or (utils/re-match? #"^user" class-name)
+      (and file (utils/re-match? #"\.clj$" file))))
 
 (defn- clojure-ns
   "Returns the clojure namespace name implied by the bytecode class name."
   [class-name]
-  (re-gsub #"_" "-" (re-get #"([^$]+)\$" class-name 1)))
+  (str/re-gsub #"_" "-" (utils/re-get #"([^$]+)\$" class-name 1)))
 
 (def alpha-punc-subs
   [[#"_QMARK_" "?"]
@@ -27,14 +28,14 @@
   "Returns the clojure function name implied by the bytecode class name."
   [class-name]
   (reduce
-    (fn [base-name [alpha-punc punc]] (re-gsub alpha-punc punc base-name))
-    (re-without #"(^[^$]+\$)|(__\d+(\$[^$]+)*$)" class-name)
+    (fn [base-name [alpha-punc punc]] (str/re-gsub alpha-punc punc base-name))
+    (utils/re-without #"(^[^$]+\$)|(__\d+(\$[^$]+)*$)" class-name)
     alpha-punc-subs))
 
 (defn- clojure-annon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
   [class-name]
-  (re-match? #"\$fn__" class-name))
+  (utils/re-match? #"\$fn__" class-name))
 
 (defn parse-trace-elem
   "Returns a map of information about the java trace element.
