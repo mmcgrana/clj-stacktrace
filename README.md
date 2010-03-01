@@ -1,4 +1,6 @@
-`clj-stacktrace` is a library for creating more readable stacktraces in Clojure programs.
+# clj-stacktrace
+
+A library for creating more readable stacktraces in Clojure programs.
 
 For example, to print a nice stack trace in a REPL:
 
@@ -50,7 +52,6 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
          (catch Exception e
            (parse-exception e)))
 
-License
--------
+## License
 
-Copyright 2009 Mark McGranaghan and released under an MIT license.
+Copyright 2009-2010 Mark McGranaghan and released under an MIT license.
