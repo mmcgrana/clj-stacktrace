@@ -1,5 +1,5 @@
 (ns clj-stacktrace.repl-test
-  (:use (clj-unit core)
+  (:use clojure.test
         (clj-stacktrace repl utils)))
 
 (defmacro with-cascading-exception
@@ -11,20 +11,20 @@
        (let [~binding-sym e#]
          ~@body))))
 
-(deftest "pst"
+(deftest test-pst
   (with-cascading-exception e
-    (assert-that (with-out-str (pst e)))
+    (is (with-out-str (pst e)))
     (binding [*e e]
-      (assert-that (with-out-str (pst))))))
+      (is (with-out-str (pst))))))
 
-(deftest "pst"
+(deftest test-pst-str
   (with-cascading-exception e
-    (assert-that (pst-str e))
+    (is (pst-str e))
     (binding [*e e]
-      (assert-that (pst-str)))))
+      (is (pst-str)))))
 
-(deftest "pst+"
+(deftest test-pst+
   (with-cascading-exception e
-    (assert-that (with-out-str (pst+ e)))
+    (is (with-out-str (pst+ e)))
     (binding [*e e]
-      (assert-that (with-out-str (pst+))))))
+      (is (with-out-str (pst+))))))
