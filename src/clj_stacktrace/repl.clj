@@ -59,10 +59,11 @@
 
 (defn pst-elems-on
   [on color? parsed-elems & [source-width]]
-  (let [print-width
-          (+ 6 (or source-width
-                   (utils/high (map (memfn length)
-                                    (map source-str parsed-elems)))))]
+  (let [print-width (+ 6 (or source-width
+                             (utils/fence
+                               (sort
+                                 (map #(.length %)
+                                      (map source-str parsed-elems))))))]
     (doseq [parsed-elem parsed-elems]
       (.append on
         (colored color? (elem-color parsed-elem)
