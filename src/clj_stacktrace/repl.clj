@@ -83,9 +83,10 @@
   "Returns the width of the longest source-string among all trace elems of the 
   excp and its causes."
   [excp]
-    (let [this-source-width
-            (utils/high (map (memfn length)
-                             (map source-str (:trace-elems excp))))]
+    (let [this-source-width (utils/fence
+                              (sort
+                                (map #(.length %)
+                                     (map source-str (:trace-elems excp)))))]
       (if-let [cause (:cause excp)]
         (max this-source-width (find-source-width cause))
         this-source-width)))
