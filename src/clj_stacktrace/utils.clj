@@ -1,5 +1,4 @@
-(ns clj-stacktrace.utils
-  (:require [clojure.contrib.str-utils :as str]))
+(ns clj-stacktrace.utils)
 
 (defn mash
   "Reduce a seq-able to a map. The given fn should return a 2-element tuple
@@ -11,10 +10,15 @@
         (assoc memo k v)))
     {} coll))
 
+(defn re-gsub
+  "Simple version of re-gsub that only supports string replacements."
+  [#^java.util.regex.Pattern regex replacement #^String string]
+  (.. regex (matcher string) (replaceAll replacement)))
+
 (defn re-without
   "Returns a String with the given pattern re-gsub'd out the given string."
   [pattern string]
-  (str/re-gsub pattern "" string))
+  (re-gsub pattern "" string))
 
 (defn re-match?
   "Returns true iff the given string contains a match for the given pattern."
