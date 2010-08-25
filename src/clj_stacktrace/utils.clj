@@ -12,7 +12,7 @@
 
 (defn re-gsub
   "Simple version of re-gsub that only supports string replacements."
-  [#^java.util.regex.Pattern regex replacement #^String string]
+  [^java.util.regex.Pattern regex replacement ^String string]
   (.. regex (matcher string) (replaceAll replacement)))
 
 (defn re-without
@@ -22,7 +22,7 @@
 
 (defn re-match?
   "Returns true iff the given string contains a match for the given pattern."
-  [#^java.util.regex.Pattern pattern string]
+  [^java.util.regex.Pattern pattern string]
   (.find (.matcher pattern string)))
 
 (defn re-get
