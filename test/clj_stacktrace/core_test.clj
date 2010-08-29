@@ -1,6 +1,7 @@
 (ns clj-stacktrace.core-test
-  (:use clojure.test
-        (clj-stacktrace core utils)))
+  (:use clojure.test)
+  (:use clj-stacktrace.core)
+  (:use clj-stacktrace.utils))
 
 (def cases-data
   [["foo.bar$biz__123" "invoke" "bar.clj" 456

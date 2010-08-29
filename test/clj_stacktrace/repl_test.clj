@@ -1,6 +1,7 @@
 (ns clj-stacktrace.repl-test
-  (:use clojure.test
-        (clj-stacktrace repl utils)))
+  (:use clojure.test)
+  (:use clj-stacktrace.utils)
+  (:use clj-stacktrace.repl))
 
 (defmacro with-cascading-exception
   "Execute body in the context of a variable bound to an exception instance
