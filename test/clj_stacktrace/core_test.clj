@@ -49,9 +49,6 @@
   (doseq [[elem parsed] cases]
     (is (= parsed (parse-trace-elem elem)))))
 
-(deftest test-parse-trace-elems
-  (is (= (map second cases) (parse-trace-elems (map first cases)))))
-
 (deftest test-trim-redundant
   (let [trim-fn (resolve 'clj-stacktrace.core/trim-redundant)]
     (is (= '(d c) (trim-fn '(d c b a) '(f e b a))))
