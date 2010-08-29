@@ -34,7 +34,7 @@
 (defn- clojure-annon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
   [class-name]
-  (utils/re-match? #"\$fn__" class-name))
+  (utils/re-match? #"\$.*\$" class-name))
 
 (defn parse-trace-elem
   "Returns a map of information about the java trace element.
