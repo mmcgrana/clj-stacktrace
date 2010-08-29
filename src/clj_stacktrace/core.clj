@@ -12,24 +12,31 @@
   [class-name]
   (utils/re-gsub #"_" "-" (utils/re-get #"([^$]+)\$" class-name 1)))
 
-(def alpha-punc-subs
-  [[#"_QMARK_" "?"]
-   [#"_BANG_"  "!"]
-   [#"_PLUS_"  "+"]
-   [#"_GT_"    ">"]
-   [#"_LT_"    "<"]
-   [#"_EQ_"    "="]
-   [#"_STAR_"  "*"]
-   [#"_SLASH_" "/"]
-   [#"_"       "-"]])
+; drop everything before and including the first $
+; drop everything after and including and the second $
+; drop any __xyz suffixes
+; sub _PLACEHOLDER_ for the corresponding char
+(def clojure-fn-subs
+  [[#"^[^$]*\$" ""]
+   [#"\$.*"    ""]
+   [#"__\d+.*"  ""]
+   [#"_QMARK_"  "?"]
+   [#"_BANG_"   "!"]
+   [#"_PLUS_"   "+"]
+   [#"_GT_"     ">"]
+   [#"_LT_"     "<"]
+   [#"_EQ_"     "="]
+   [#"_STAR_"   "*"]
+   [#"_SLASH_"  "/"]
+   [#"_"        "-"]])
 
 (defn- clojure-fn
   "Returns the clojure function name implied by the bytecode class name."
   [class-name]
   (reduce
-    (fn [base-name [alpha-punc punc]] (utils/re-gsub alpha-punc punc base-name))
-    (utils/re-without #"(^[^$]+\$)|(__\d+(\$[^$]+)*$)" class-name)
-    alpha-punc-subs))
+    (fn [base-name [pattern sub]] (utils/re-gsub pattern sub base-name))
+    class-name
+    clojure-fn-subs))
 
 (defn- clojure-annon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
