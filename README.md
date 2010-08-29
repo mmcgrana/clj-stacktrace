@@ -6,33 +6,25 @@ For example, to print a nice stack trace in a REPL:
 
     => (use 'clj-stacktrace.repl)
     => ("foo")
-    java.lang.ClassCastException: java.lang.String
-    user=> (pst)  ;instead of (.printStackTrace *e) 
-    java.lang.ClassCastException: java.lang.String
-             Compiler.java:4163 clojure.lang.Compiler.eval
-                  core.clj:1497 clojure.core/eval
-                   main.clj:148 clojure.main/repl[fn]
-                   main.clj:145 clojure.main/repl
-                RestFn.java:876 clojure.lang.RestFn.invoke
-                repl_ln.clj:233 clojure.contrib.repl-ln/repl
-                RestFn.java:402 clojure.lang.RestFn.invoke
-                    user.clj:71 user/eval
-             Compiler.java:4152 clojure.lang.Compiler.eval
-             Compiler.java:4480 clojure.lang.Compiler.load
-                    RT.java:327 clojure.lang.RT.loadResourceScript
-                    RT.java:312 clojure.lang.RT.loadResourceScript
-                    RT.java:308 clojure.lang.RT.maybeLoadResourceScript
-                    RT.java:446 clojure.lang.RT.doInit
-                    RT.java:286 clojure.lang.RT.<clinit>
-              Namespace.java:31 clojure.lang.Namespace.<init>
-             Namespace.java:116 clojure.lang.Namespace.findOrCreate
-                   main.java:21 clojure.main.<clinit>
-               (Unknown Source) java.lang.Class.forName0
-                 Class.java:164 java.lang.Class.forName
-          ConsoleRunner.java:69 jline.ConsoleRunner.main
-    Caused by: java.lang.String
-                       repl-1:1 user/eval
-             Compiler.java:4152 clojure.lang.Compiler.eval
+    java.lang.ClassCastException: java.lang.String cannot be cast to clojure.lang.IFn (NO_SOURCE_FILE:0)
+           Compiler.java:5440 clojure.lang.Compiler.eval
+           Compiler.java:5391 clojure.lang.Compiler.eval
+                core.clj:2382 clojure.core/eval
+                 main.clj:183 clojure.main/repl[fn]
+                 main.clj:204 clojure.main/repl[fn]
+                 main.clj:204 clojure.main/repl
+              RestFn.java:422 clojure.lang.RestFn.invoke
+                 main.clj:262 clojure.main/repl-opt
+                 main.clj:355 clojure.main/main
+              RestFn.java:398 clojure.lang.RestFn.invoke
+                 Var.java:361 clojure.lang.Var.invoke
+                 AFn.java:159 clojure.lang.AFn.applyToHelper
+                 Var.java:482 clojure.lang.Var.applyTo
+                 main.java:37 clojure.main.main
+    Caused by: java.lang.String cannot be cast to clojure.lang.IFn
+             NO_SOURCE_FILE:2 user/eval100
+           Compiler.java:5424 clojure.lang.Compiler.eval
+
 
 In stack traces printed by `pst`:
 
