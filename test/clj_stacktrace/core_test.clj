@@ -16,6 +16,12 @@
    ["foo.bar$biz_bat_QMARK___448$fn__456" "invoke" "bar.clj" 456
      {:clojure true :ns "foo.bar" :fn "biz-bat?" :file "bar.clj" :line 456 :annon-fn true}]
 
+   ["foo.bar$repl$fn__5629.invoke" "invoke" "bar.clj" 456
+     {:clojure true :ns "foo.bar" :fn "repl" :file "bar.clj" :line 456 :annon-fn true}]
+
+   ["foo.bar$repl$read_eval_print__5624" "invoke" "bar.clj" 456
+     {:clojure true :ns "foo.bar" :fn "repl" :file "bar.clj" :line 456 :annon-fn true}]
+
    ["foo.bar$biz__123$fn__456" "invoke" "bar.clj" 789
     {:clojure true :ns "foo.bar" :fn "biz" :file "bar.clj" :line 789 :annon-fn true}]
 
