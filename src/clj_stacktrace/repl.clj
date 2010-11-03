@@ -52,6 +52,10 @@
 (defn method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
+(defn pst-class-on [on color? class]
+  (.append on (colored color? :red (str (.getName class) ": ")))
+  (.flush on))
+
 (defn pst-message-on [on color? message]
   (.append on (colored color? :red message))
   (.append on "\n")
@@ -72,9 +76,16 @@
       (.append on "\n")
       (.flush on))))
 
+(defn pst-caused-by-on
+  [on color?]
+  (.append on (colored color? :red "Caused by: "))
+  (.flush on))
+
 (defn- pst-cause-on
   [on color? exec source-width]
-  (pst-message-on on color? (str "Caused by: " (:message exec)))
+  (pst-caused-by-on on color?)
+  (pst-class-on on color? (:class exec))
+  (pst-message-on on color? (:message exec))
   (pst-elems-on on color? (:trimmed-elems exec) source-width)
   (if-let [cause (:cause exec)]
     (pst-cause-on on color? cause source-width)))
@@ -96,6 +107,7 @@
   ANSI colored if color? is true."
   (let [exec         (parse-exception e)
         source-width (find-source-width exec)]
+    (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
     (pst-elems-on on color? (:trace-elems exec) source-width)
     (if-let [cause (:cause exec)]
