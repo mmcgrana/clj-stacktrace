@@ -44,6 +44,13 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
          (catch Exception e
            (parse-exception e)))
 
+If you use Leiningen, you can hook clj-stacktrace straight into your project. You'll need to add Robert Hooke to your :dependencies in project.clj. The {:color true} line is optional.
+
+    :dependencies [[org.clojure/clojure "1.2.0"]
+                   [robert/hooke "1.1.0"]]
+    :dev-dependencies [[clj-stacktrace "0.2.1-SNAPSHOT"]]
+    :clj-stacktrace {:color true}
+
 ## License
 
 Copyright 2009-2010 Mark McGranaghan and released under an MIT license.
