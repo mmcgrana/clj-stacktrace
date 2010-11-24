@@ -17,6 +17,7 @@
   (eval-in-project project (hook-form form (:color (:clj-stacktrace project)))
                    h s `(do (try (require '~'robert.hooke)
                                  (require '~'clj-stacktrace.repl)
+                                 (require '~'clojure.stacktrace)
                                  (catch Exception _#))
                             ~init)))
 
