@@ -6,17 +6,13 @@
   (let [pst (if color?
               'clj-stacktrace.repl/pst+
               'clj-stacktrace.repl/pst)]
-    `(do (if-let [add-hook# (resolve '~'robert.hooke/add-hook)]
-           (add-hook# (resolve '~'clojure.stacktrace/print-cause-trace)
-                      (fn [original# & args#]
-                        (apply @(resolve '~pst) args#)))
-           (println "clj-stacktrace needs robert.hooke dependency"))
+    `(do (alter-var-root (resolve '~'clojure.stacktrace/print-cause-trace)
+                         (constantly @(resolve '~pst)))
          ~form)))
 
 (defn- add-stacktrace-hook [eval-in-project project form & [h s init]]
   (eval-in-project project (hook-form form (:color (:clj-stacktrace project)))
-                   h s `(do (try (require '~'robert.hooke)
-                                 (require '~'clj-stacktrace.repl)
+                   h s `(do (try (require '~'clj-stacktrace.repl)
                                  (require '~'clojure.stacktrace)
                                  (catch Exception _#))
                             ~init)))

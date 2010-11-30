@@ -44,12 +44,20 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
          (catch Exception e
            (parse-exception e)))
 
-If you use Leiningen, you can hook clj-stacktrace straight into your project. You'll need to add Robert Hooke to your :dependencies in project.clj. The {:color true} line is optional.
+If you use Leiningen, you can hook clj-stacktrace straight into your
+project in.
 
-    :dependencies [[org.clojure/clojure "1.2.0"]
-                   [robert/hooke "1.1.0"]]
-    :dev-dependencies [[clj-stacktrace "0.2.1-SNAPSHOT"]]
+    :dev-dependencies [[clj-stacktrace "0.2.1"]]
+    :hooks [leiningen.hooks.clj-stacktrace-test]
+    :repl-options [:caught clj-stacktrace.repl/pst+]
     :clj-stacktrace {:color true}
+
+The :hooks entry will enable clj-stacktrace to be used by clojure.test
+and other things that use the clojure.stacktrace library. The
+:repl-options entry will cause clj-stacktrace to be used in the
+repl. Colorized stacktraces in clojure.test can interfere with some
+tools like Swank, so by default it uses pst rather than pst+; you can
+change this with {:color true}.
 
 ## License
 
