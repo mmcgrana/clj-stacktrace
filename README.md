@@ -47,7 +47,7 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 If you use Leiningen, you can hook clj-stacktrace straight into your
 project in.
 
-    :dev-dependencies [[clj-stacktrace "0.2.1"]]
+    :dev-dependencies [[clj-stacktrace "0.2.3-SNAPSHOT"]]
     :hooks [leiningen.hooks.clj-stacktrace-test]
     :repl-options [:caught clj-stacktrace.repl/pst+]
     :clj-stacktrace {:color true}
@@ -61,4 +61,4 @@ change this with {:color true}.
 
 ## License
 
-Copyright 2009-2010 Mark McGranaghan and released under an MIT license.
+Copyright 2009-2011 Mark McGranaghan and released under an MIT license.
