@@ -50,7 +50,7 @@ project in.
     :dev-dependencies [[clj-stacktrace "0.2.3-SNAPSHOT"]]
     :hooks [leiningen.hooks.clj-stacktrace-test]
     :repl-options [:caught clj-stacktrace.repl/pst+]
-    :clj-stacktrace {:color true}
+    :clj-stacktrace {:test-color true}
 
 The :hooks entry will enable clj-stacktrace to be used by clojure.test
 and other things that use the clojure.stacktrace library. The
