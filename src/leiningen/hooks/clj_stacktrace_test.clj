@@ -1,4 +1,4 @@
-(ns leiningen.hooks.clj-stacktrace
+(ns leiningen.hooks.clj-stacktrace-test
   (:use [leiningen.compile :only [eval-in-project]]
         [robert.hooke :only [add-hook]]))
 
