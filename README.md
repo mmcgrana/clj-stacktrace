@@ -44,6 +44,22 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
          (catch Exception e
            (parse-exception e)))
 
+If you use Leiningen, you can install clj-stacktrace on a per-user basis:
+
+    $ lein plugin install clj-stacktrace 0.2.3
+
+Add this to your `~/.lein/init.clj` file:
+
+    (require 'leiningen.hooks.clj-stacktrace-test)
+
+    (def settings {:repl-options [:init (require 'clj-stacktrace.repl)
+                                  :caught 'clj-stacktrace.repl/pst+]})
+
+The hook will enable clj-stacktrace to be used across all the projects
+you work on in clojure.test and other things that use the
+clojure.stacktrace library. The :repl-options settings will cause
+clj-stacktrace to be used in the repl and swank.
+
 ## License
 
-Copyright 2009-2010 Mark McGranaghan and released under an MIT license.
+Copyright 2009-2011 Mark McGranaghan and released under an MIT license.
