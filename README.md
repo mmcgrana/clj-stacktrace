@@ -44,20 +44,21 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
          (catch Exception e
            (parse-exception e)))
 
-If you use Leiningen, you can hook clj-stacktrace straight into your
-project in.
+If you use Leiningen, you can install clj-stacktrace on a per-user basis:
 
-    :dev-dependencies [[clj-stacktrace "0.2.3-SNAPSHOT"]]
-    :hooks [leiningen.hooks.clj-stacktrace-test]
-    :repl-options [:caught clj-stacktrace.repl/pst+]
-    :clj-stacktrace {:test-color true}
+    $ lein plugin install clj-stacktrace 0.2.3
 
-The :hooks entry will enable clj-stacktrace to be used by clojure.test
-and other things that use the clojure.stacktrace library. The
-:repl-options entry will cause clj-stacktrace to be used in the
-repl. Colorized stacktraces in clojure.test can interfere with some
-tools like Swank, so by default it uses pst rather than pst+; you can
-change this with {:color true}.
+Add this to your `~/.lein/init.clj` file:
+
+    (require 'leiningen.hooks.clj-stacktrace-test)
+
+    (def settings {:repl-options [:init (require 'clj-stacktrace.repl)
+                                  :caught 'clj-stacktrace.repl/pst+]})
+
+The hook will enable clj-stacktrace to be used across all the projects
+you work on in clojure.test and other things that use the
+clojure.stacktrace library. The :repl-options settings will cause
+clj-stacktrace to be used in the repl and swank.
 
 ## License
 
