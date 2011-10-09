@@ -3,7 +3,7 @@
   (:use clj-stacktrace.core)
   (:use clj-stacktrace.utils))
 
-(def cases-data
+(def cases
   [["foo.bar$biz__123" "invoke" "bar.clj" 456
     {:clojure true :ns "foo.bar" :fn "biz"
      :file "bar.clj" :line 456 :annon-fn false}]
@@ -60,13 +60,9 @@
     {:java true :class "some.space.SomeClass" :method "someMethod"
      :file nil :line nil}]])
 
-(def cases
-  (mash
-   (fn [[c m f l p]] [(StackTraceElement. c m f l) p])
-   cases-data))
-
 (deftest test-parse-trace-elem
-  (doseq [[elem parsed] cases]
+  (doseq [[class method file line parsed] cases
+          :let [elem (StackTraceElement. class method file line)]]
     (is (= parsed (parse-trace-elem elem)))))
 
 (deftest test-trim-redundant
