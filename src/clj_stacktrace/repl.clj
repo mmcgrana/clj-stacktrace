@@ -39,7 +39,7 @@
     "(Unknown Source)"))
 
 (defn clojure-method-str [parsed]
-  (str (:ns parsed) "/" (:fn parsed) (if (:annon-fn parsed) "[fn]")))
+  (str (:ns parsed) "/" (:fn parsed) (if (:anon-fn parsed) "[fn]")))
 
 (defn java-method-str [parsed]
   (str (:class parsed) "." (:method parsed)))

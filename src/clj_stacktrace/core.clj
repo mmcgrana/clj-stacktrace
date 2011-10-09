@@ -39,7 +39,7 @@
    class-name
    clojure-fn-subs))
 
-(defn- clojure-annon-fn?
+(defn- clojure-anon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
   [class-name]
   (utils/re-match? #"\$.*\$" class-name))
@@ -56,7 +56,7 @@
   :clojure   true, to inidcate a Clojure elem.
   :ns        String representing the namespace of the function.
   :fn        String representing the name of the enclosing var for the function.
-  :annon-fn  true iff the function is an anonymous inner fn."
+  :anon-fn   true iff the function is an anonymous inner fn."
   [elem]
   (let [class-name (.getClassName elem)
         file       (.getFileName  elem)
@@ -65,9 +65,9 @@
     (if (clojure-code? class-name file)
       (assoc parsed
         :clojure true
-        :ns       (clojure-ns class-name)
-        :fn       (clojure-fn class-name)
-        :annon-fn (clojure-annon-fn? class-name))
+        :ns      (clojure-ns class-name)
+        :fn      (clojure-fn class-name)
+        :anon-fn (clojure-anon-fn? class-name))
       (assoc parsed
         :java true
         :class class-name
