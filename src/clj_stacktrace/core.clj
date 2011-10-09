@@ -5,6 +5,7 @@
   "Returns true if the filename is non-null and indicates a clj source file."
   [class-name file]
   (or (utils/re-match? #"^user" class-name)
+      (= file "NO_SOURCE_FILE")
       (and file (utils/re-match? #"\.clj$" file))))
 
 (defn- clojure-ns
@@ -59,7 +60,7 @@
   [elem]
   (let [class-name (.getClassName elem)
         file       (.getFileName  elem)
-        line       (let [l (.getLineNumber elem)] (if (> l 0) l))
+        line       (let [l (.getLineNumber elem)] (if (pos? l) l))
         parsed     {:file file :line line}]
     (if (clojure-code? class-name file)
       (assoc parsed
