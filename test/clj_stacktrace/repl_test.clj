@@ -8,9 +8,9 @@
   that includes a caused-by cascade."
   [binding-sym & body]
   `(try (first (lazy-seq (cons (/) nil)))
-     (catch Exception e#
-       (let [~binding-sym e#]
-         ~@body))))
+        (catch Exception e#
+          (let [~binding-sym e#]
+            ~@body))))
 
 (deftest test-pst
   (with-cascading-exception e

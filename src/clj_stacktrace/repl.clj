@@ -28,15 +28,10 @@
     (if (utils/re-match? #"^clojure\." (:class elem))
       :cyan
       :blue)
-    (cond
-      (nil? (:ns elem))
-        :yellow
-      (utils/re-match? #"^(user|repl)" (:ns elem))
-        :yellow
-      (utils/re-match? #"^clojure\." (:ns elem))
-        :magenta
-      :user-code
-        :green)))
+    (cond (nil? (:ns elem)) :yellow
+          (utils/re-match? #"^(user|repl)" (:ns elem)) :yellow
+          (utils/re-match? #"^clojure\." (:ns elem)) :magenta
+          :user-code :green)))
 
 (defn source-str [parsed]
   (if (and (:file parsed) (:line parsed))
@@ -65,14 +60,14 @@
   [on color? parsed-elems & [source-width]]
   (let [print-width (+ 6 (or source-width
                              (utils/fence
-                               (sort
-                                 (map #(.length %)
-                                      (map source-str parsed-elems))))))]
+                              (sort
+                               (map #(.length %)
+                                    (map source-str parsed-elems))))))]
     (doseq [parsed-elem parsed-elems]
       (.append on
-        (colored color? (elem-color parsed-elem)
-          (str (utils/rjust print-width (source-str parsed-elem))
-               " " (method-str parsed-elem))))
+               (colored color? (elem-color parsed-elem)
+                        (str (utils/rjust print-width (source-str parsed-elem))
+                             " " (method-str parsed-elem))))
       (.append on "\n")
       (.flush on))))
 
@@ -91,16 +86,16 @@
     (pst-cause-on on color? cause source-width)))
 
 (defn- find-source-width
-  "Returns the width of the longest source-string among all trace elems of the 
+  "Returns the width of the longest source-string among all trace elems of the
   excp and its causes."
   [excp]
-    (let [this-source-width (utils/fence
-                              (sort
-                                (map #(.length %)
-                                     (map source-str (:trace-elems excp)))))]
-      (if-let [cause (:cause excp)]
-        (max this-source-width (find-source-width cause))
-        this-source-width)))
+  (let [this-source-width (utils/fence
+                           (sort
+                            (map #(.length %)
+                                 (map source-str (:trace-elems excp)))))]
+    (if-let [cause (:cause excp)]
+      (max this-source-width (find-source-width cause))
+      this-source-width)))
 
 (defn pst-on [on color? e]
   "Prints to the given Writer on a pretty stack trace for the given exception e,

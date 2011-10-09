@@ -5,10 +5,10 @@
   representing a key and value in the new map."
   [f coll]
   (reduce
-    (fn [memo elem]
-      (let [[k v] (f elem)]
-        (assoc memo k v)))
-    {} coll))
+   (fn [memo elem]
+     (let [[k v] (f elem)]
+       (assoc memo k v)))
+   {} coll))
 
 (defn re-gsub
   "Simple version of re-gsub that only supports string replacements."
@@ -52,9 +52,9 @@
 (defn quartile1
   "Compute the first quartile for the given collection according to
   Tukey (Hoaglin et al. 1983). coll must be sorted."
-  ; Hoaglin, D.; Mosteller, F.; and Tukey, J. (Ed.).
-  ; Understanding Robust and Exploratory Data Analysis.
-  ; New York: Wiley, pp. 39, 54, 62, 223, 1983.
+  ;; Hoaglin, D.; Mosteller, F.; and Tukey, J. (Ed.).
+  ;; Understanding Robust and Exploratory Data Analysis.
+  ;; New York: Wiley, pp. 39, 54, 62, 223, 1983.
   [coll]
   (let [c (count coll)]
     (nth coll (if (even? c)
@@ -64,9 +64,9 @@
 (defn quartile3
   "Compute the third quartile for the given collection according to
   Tukey (Hoaglin et al. 1983). coll must be sorted."
-  ; Hoaglin, D.; Mosteller, F.; and Tukey, J. (Ed.).
-  ; Understanding Robust and Exploratory Data Analysis.
-  ; New York: Wiley, pp. 39, 54, 62, 223, 1983.
+  ;; Hoaglin, D.; Mosteller, F.; and Tukey, J. (Ed.).
+  ;; Understanding Robust and Exploratory Data Analysis.
+  ;; New York: Wiley, pp. 39, 54, 62, 223, 1983.
   [coll]
   (let [c (count coll)]
     (nth coll (if (even? c)

@@ -13,10 +13,10 @@
   [class-name]
   (utils/re-gsub #"_" "-" (utils/re-get #"([^$]+)\$" class-name 1)))
 
-; drop everything before and including the first $
-; drop everything after and including and the second $
-; drop any __xyz suffixes
-; sub _PLACEHOLDER_ for the corresponding char
+;; drop everything before and including the first $
+;; drop everything after and including and the second $
+;; drop any __xyz suffixes
+;; sub _PLACEHOLDER_ for the corresponding char
 (def clojure-fn-subs
   [[#"^[^$]*\$" ""]
    [#"\$.*"    ""]
@@ -35,9 +35,9 @@
   "Returns the clojure function name implied by the bytecode class name."
   [class-name]
   (reduce
-    (fn [base-name [pattern sub]] (utils/re-gsub pattern sub base-name))
-    class-name
-    clojure-fn-subs))
+   (fn [base-name [pattern sub]] (utils/re-gsub pattern sub base-name))
+   class-name
+   clojure-fn-subs))
 
 (defn- clojure-annon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
@@ -47,15 +47,15 @@
 (defn parse-trace-elem
   "Returns a map of information about the java trace element.
   All returned maps have the keys:
-  :file      String of source file name. 
+  :file      String of source file name.
   :line      Number of source line number of the enclosing form.
   Additionally for elements from Java code:
-  :java      true, to indicate a Java elem. 
+  :java      true, to indicate a Java elem.
   :class     String of the name of the class to which the method belongs.
   Additionally for elements from Clojure code:
-  :clojure   true, to inidcate a Clojure elem. 
+  :clojure   true, to inidcate a Clojure elem.
   :ns        String representing the namespace of the function.
-  :fn        String representing the name of the enclosing var for the function. 
+  :fn        String representing the name of the enclosing var for the function.
   :annon-fn  true iff the function is an anonymous inner fn."
   [elem]
   (let [class-name (.getClassName elem)
@@ -80,7 +80,7 @@
   (map parse-trace-elem elems))
 
 (defn- trim-redundant
-  "Returns the portion of the tail of causer-elems that is not duplicated in 
+  "Returns the portion of the tail of causer-elems that is not duplicated in
   the tail of caused-elems. This corresponds to the \"...26 more\" that you
   see at the bottom of regular trace dumps."
   [causer-parsed-elems caused-parsed-elems]
