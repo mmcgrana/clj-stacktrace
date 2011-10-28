@@ -100,23 +100,35 @@
       (max this-source-width (find-source-width cause))
       this-source-width)))
 
-(defn pst-on [on color? e]
+(defn- omit-frame? [elem omitter]
+  (if (ifn? omitter)
+    (omitter elem)
+    (re-find omitter (str elem))))
+
+(defn- omit [trace-elems to-omit]
+  (if (coll? to-omit)
+    (remove (fn [elem]
+              (some (partial omit-frame? elem) to-omit))
+            trace-elems)
+    (omit trace-elems [to-omit])))
+
+(defn pst-on [on color? e {:keys [to-omit]}]
   "Prints to the given Writer on a pretty stack trace for the given exception e,
   ANSI colored if color? is true."
   (let [exec         (parse-exception e)
         source-width (find-source-width exec)]
     (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
-    (pst-elems-on on color? (:trace-elems exec) source-width)
+    (pst-elems-on on color? (omit (:trace-elems exec) to-omit) source-width)
     (if-let [cause (:cause exec)]
       (pst-cause-on on color? cause source-width))))
 
 (defn pst
   "Print to *out* a pretty stack trace for an exception, by default *e."
-  [& [e]]
-  (pst-on *out* false (or e *e)))
+  [& [e & {:as opts}]]
+  (pst-on *out* (:test-color opts) (or e *e) opts))
 
 (defn pst+
   "Like pst, but with ANSI terminal color coding."
-  [& [e]]
-  (pst-on *out* true (or e *e)))
+  [& [e & {:as opts}]]
+  (pst-on *out* true (or e *e) opts))
