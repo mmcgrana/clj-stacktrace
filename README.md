@@ -38,11 +38,13 @@ If you want to direct the printing to somewhere other than `*out*`, either use `
 
 The library also offers an API for programatically 'parsing' exceptions. This API is used internal for `pst` and can be used to e.g. improve development tools. Try for example:
 
-    => (use '(clj-stacktrace core))
-    => (try
-         ("nofn")
-         (catch Exception e
-           (parse-exception e)))
+```clj
+(use '(clj-stacktrace core))
+(try
+  ("nofn")
+  (catch Exception e
+    (parse-exception e)))
+```
 
 If you use Leiningen, you can install clj-stacktrace on a per-user basis:
 
@@ -50,10 +52,12 @@ If you use Leiningen, you can install clj-stacktrace on a per-user basis:
 
 Add this to your `~/.lein/init.clj` file:
 
-    (require 'leiningen.hooks.clj-stacktrace-test)
-
-    (def settings {:repl-options [:init (require 'clj-stacktrace.repl)
-                                  :caught 'clj-stacktrace.repl/pst+]})
+```clj
+(try (require 'leiningen.hooks.clj-stacktrace-test)
+     (def settings {:repl-options [:init (require 'clj-stacktrace.repl)
+                                   :caught 'clj-stacktrace.repl/pst+]})
+  (catch java.io.FileNotFoundException _))
+```
 
 The hook will enable clj-stacktrace to be used across all the projects
 you work on in clojure.test and other things that use the
