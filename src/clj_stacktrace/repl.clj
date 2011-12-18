@@ -56,6 +56,12 @@
   (.append on "\n")
   (.flush on))
 
+(defn pst-elem-str
+  [color? parsed-elem print-width]
+  (colored color? (elem-color parsed-elem)
+           (str (utils/rjust print-width (source-str parsed-elem))
+                " " (method-str parsed-elem))))
+
 (defn pst-elems-on
   [on color? parsed-elems & [source-width]]
   (let [print-width (+ 6 (or source-width
@@ -64,10 +70,7 @@
                                (map #(.length %)
                                     (map source-str parsed-elems))))))]
     (doseq [parsed-elem parsed-elems]
-      (.append on
-               (colored color? (elem-color parsed-elem)
-                        (str (utils/rjust print-width (source-str parsed-elem))
-                             " " (method-str parsed-elem))))
+      (.append on (pst-elem-str color? parsed-elem print-width))
       (.append on "\n")
       (.flush on))))
 
@@ -85,7 +88,7 @@
   (if-let [cause (:cause exec)]
     (pst-cause-on on color? cause source-width)))
 
-(defn- find-source-width
+(defn find-source-width
   "Returns the width of the longest source-string among all trace elems of the
   excp and its causes."
   [excp]
