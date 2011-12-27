@@ -39,7 +39,7 @@ If you want to direct the printing to somewhere other than `*out*`, either use `
 The library also offers an API for programatically 'parsing' exceptions. This API is used internal for `pst` and can be used to e.g. improve development tools. Try for example:
 
 ```clj
-(use '(clj-stacktrace core))
+(use 'clj-stacktrace.core)
 (try
   ("nofn")
   (catch Exception e
@@ -48,7 +48,7 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 
 If you use Leiningen, you can install clj-stacktrace on a per-user basis:
 
-    $ lein plugin install clj-stacktrace 0.2.3
+    $ lein plugin install clj-stacktrace 0.2.4
 
 Add this to your `~/.lein/init.clj` file:
 
@@ -61,9 +61,9 @@ Add this to your `~/.lein/init.clj` file:
 
 The hook will enable clj-stacktrace to be used across all the projects
 you work on in clojure.test and other things that use the
-clojure.stacktrace library. The :repl-options settings will cause
-clj-stacktrace to be used in the repl and swank.
+clojure.stacktrace library. The `:repl-options` settings will cause
+clj-stacktrace to be used in the repl and swank tasks.
 
 ## License
 
-Copyright 2009-2011 Mark McGranaghan and released under an MIT license.
+Copyright © 2009-2011 Mark McGranaghan and released under an MIT license.
