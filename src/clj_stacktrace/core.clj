@@ -11,7 +11,8 @@
 (defn- clojure-ns
   "Returns the clojure namespace name implied by the bytecode class name."
   [class-name]
-  (utils/re-gsub #"_" "-" (utils/re-get #"([^$]+)\$" class-name 1)))
+  (utils/re-gsub #"_" "-" (or (utils/re-get #"([^$]+)\$" class-name 1)
+                              (utils/re-get #"(.+)\.[^.]+$" class-name 1))))
 
 ;; drop everything before and including the first $
 ;; drop everything after and including and the second $
