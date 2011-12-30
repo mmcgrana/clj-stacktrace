@@ -57,7 +57,7 @@
   :ns        String representing the namespace of the function.
   :fn        String representing the name of the enclosing var for the function.
   :anon-fn   true iff the function is an anonymous inner fn."
-  [elem]
+  [^StackTraceElement elem]
   (let [class-name (.getClassName elem)
         file       (.getFileName  elem)
         line       (let [l (.getLineNumber elem)] (if (pos? l) l))
@@ -97,7 +97,7 @@
   :trimmed-elems  A subset of :trace-elems representing the portion of the
                   top of the stacktrace not shared with that of the caused
                   exception."
-  [causer-e caused-parsed-elems]
+  [^Throwable causer-e caused-parsed-elems]
   (let [parsed-elems (parse-trace-elems (.getStackTrace causer-e))
         base {:class         (class causer-e)
               :message       (.getMessage causer-e)
@@ -114,7 +114,7 @@
   :message      Regular exception message string.
   :trace-elems  Parsed stack trace elems, see parse-trace-elem.
   :cause        See parse-cause-exception."
-  [e]
+  [^Throwable e]
   (let [parsed-elems (parse-trace-elems (.getStackTrace e))
         base {:class       (class e)
               :message     (.getMessage e)
