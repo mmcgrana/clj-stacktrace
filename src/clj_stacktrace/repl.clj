@@ -47,12 +47,12 @@
 (defn method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
-(defn pst-class-on [on color? class]
-  (.append on (colored color? :red (str (.getName class) ": ")))
+(defn pst-class-on [^java.io.Writer on color? ^Class class]
+  (.append on ^String (colored color? :red (str (.getName class) ": ")))
   (.flush on))
 
-(defn pst-message-on [on color? message]
-  (.append on (colored color? :red message))
+(defn pst-message-on [^java.io.Writer on color? message]
+  (.append on ^String (colored color? :red message))
   (.append on "\n")
   (.flush on))
 
@@ -63,24 +63,24 @@
                 " " (method-str parsed-elem))))
 
 (defn pst-elems-on
-  [on color? parsed-elems & [source-width]]
+  [^java.io.Writer on color? parsed-elems & [source-width]]
   (let [print-width (+ 6 (or source-width
                              (utils/fence
                               (sort
-                               (map #(.length %)
+                               (map #(.length ^String %)
                                     (map source-str parsed-elems))))))]
     (doseq [parsed-elem parsed-elems]
-      (.append on (pst-elem-str color? parsed-elem print-width))
+      (.append on ^String (pst-elem-str color? parsed-elem print-width))
       (.append on "\n")
       (.flush on))))
 
 (defn pst-caused-by-on
-  [on color?]
-  (.append on (colored color? :red "Caused by: "))
+  [^java.io.Writer on color?]
+  (.append on ^String (colored color? :red "Caused by: "))
   (.flush on))
 
 (defn- pst-cause-on
-  [on color? exec source-width]
+  [^java.io.Writer on color? exec source-width]
   (pst-caused-by-on on color?)
   (pst-class-on on color? (:class exec))
   (pst-message-on on color? (:message exec))
@@ -94,7 +94,7 @@
   [excp]
   (let [this-source-width (utils/fence
                            (sort
-                            (map #(.length %)
+                            (map #(.length ^String %)
                                  (map source-str (:trace-elems excp)))))]
     (if-let [cause (:cause excp)]
       (max this-source-width (find-source-width cause))
