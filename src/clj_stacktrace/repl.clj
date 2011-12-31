@@ -2,7 +2,7 @@
   (:use clj-stacktrace.core)
   (:require [clj-stacktrace.utils :as utils]))
 
-(def color-codes
+(def ^{:private true} color-codes
   {:red     "\033[31m"
    :green   "\033[32m"
    :yellow  "\033[33m"
@@ -17,7 +17,7 @@
     (str (color-codes color) text (color-codes :default))
     text))
 
-(defn elem-color
+(defn- elem-color
   "Returns a symbol identifying the color appropriate for the given trace elem.
   :green   All Java elems
   :yellow  Any fn in the user or repl* namespaces (i.e. entered at REPL)
@@ -33,18 +33,18 @@
           (utils/re-match? #"^clojure\." (:ns elem)) :magenta
           :user-code :green)))
 
-(defn source-str [parsed]
+(defn- source-str [parsed]
   (if (and (:file parsed) (:line parsed))
     (str (:file parsed) ":" (:line parsed))
     "(Unknown Source)"))
 
-(defn clojure-method-str [parsed]
+(defn- clojure-method-str [parsed]
   (str (:ns parsed) "/" (:fn parsed) (if (:anon-fn parsed) "[fn]")))
 
-(defn java-method-str [parsed]
+(defn- java-method-str [parsed]
   (str (:class parsed) "." (:method parsed)))
 
-(defn method-str [parsed]
+(defn- method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
 (defn pst-class-on [on color? class]
