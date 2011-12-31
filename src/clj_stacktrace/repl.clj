@@ -3,13 +3,19 @@
   (:require [clj-stacktrace.utils :as utils]))
 
 (def ^{:private true} color-codes
-  {:red     "\033[31m"
-   :green   "\033[32m"
-   :yellow  "\033[33m"
-   :blue    "\033[34m"
-   :magenta "\033[35m"
-   :cyan    "\033[36m"
-   :default "\033[39m"})
+  {:red        "\033[31m"
+   :green      "\033[32m"
+   :yellow     "\033[33m"
+   :blue       "\033[34m"
+   :magenta    "\033[35m"
+   :cyan       "\033[36m"
+   :red-bg     "\033[41m"
+   :green-bg   "\033[42m"
+   :yellow-bg  "\033[43m"
+   :blue-bg    "\033[44m"
+   :magenta-bg "\033[45m"
+   :cyan-bg    "\033[46m"
+   :default    "\033[39m"})
 
 (defn- colored
   [color? color text]
