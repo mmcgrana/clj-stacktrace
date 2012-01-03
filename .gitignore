@@ -2,3 +2,5 @@
 *.xml
 /.lein-failures
 /.lein-deps-sum
+.idea
+*.iml

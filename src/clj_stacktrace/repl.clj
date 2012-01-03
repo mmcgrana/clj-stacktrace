@@ -3,56 +3,97 @@
   (:require [clj-stacktrace.utils :as utils]))
 
 (def color-codes
-  {:red     "\033[31m"
-   :green   "\033[32m"
-   :yellow  "\033[33m"
-   :blue    "\033[34m"
-   :magenta "\033[35m"
-   :cyan    "\033[36m"
-   :default "\033[39m"})
+  {:red        "\033[31m"
+   :green      "\033[32m"
+   :yellow     "\033[33m"
+   :blue       "\033[34m"
+   :magenta    "\033[35m"
+   :cyan       "\033[36m"
+   :red-bg     "\033[41m"
+   :green-bg   "\033[42m"
+   :yellow-bg  "\033[43m"
+   :blue-bg    "\033[44m"
+   :magenta-bg "\033[45m"
+   :cyan-bg    "\033[46m" })
 
-(defn- colored
-  [color? color text]
+(def default-colors {:error-color        :red
+                     :user-code-color    :green
+                     :repl-color         :yellow
+                     :java-color         :blue
+                     :other-code-color   :magenta
+                     :clojure-java-color :cyan   })
+
+(def ^{:private true} color-config (atom default-colors))
+
+(defn configure-colors 
+  "Configure the colors to use for the stacktrace. 
+   Valid keys: :error-color, :user-code-color, :repl-color, 
+               :java-color, :other-code-color, :clojure-java-color
+   For valid values see the color-codes var."
+  [color-alterations]
+  (when (not-every? (set (keys @color-config)) (keys color-alterations))
+    (throw (Exception. (str "Configuration keys must be one of " (pr-str (keys @color-config))))))
+  (when (not-every? (set (keys color-codes)) (vals color-alterations))
+    (throw (Exception. (str "Configuration values must be one of " (pr-str (keys color-codes))))))
+
+  (swap! color-config merge color-alterations))
+
+(defn reset-color-configuration 
+  "Sets the stack trace colors back to the defaults."
+  []
+  (configure-colors default-colors))
+
+(defn configure-background-colors 
+  "Sets all colors to the background versions of the default colors."
+  [] 
+  (configure-colors {:error-color        :red-bg
+                     :user-code-color    :green-bg
+                     :repl-color         :yellow-bg
+                     :java-color         :blue-bg
+                     :other-code-color   :magenta-bg
+                     :clojure-java-color :cyan-bg   }))
+
+(defn- colored [color? color text]
   (if color?
-    (str (color-codes color) text (color-codes :default))
+    (str (color-codes (@color-config color)) text "\033[39m")
     text))
 
-(defn elem-color
-  "Returns a symbol identifying the color appropriate for the given trace elem.
-  :green   All Java elems
-  :yellow  Any fn in the user or repl* namespaces (i.e. entered at REPL)
-  :blue    Any fn in clojure.* (e.g. clojure.core, clojure.contrib.*)
-  :magenta Anything else - i.e. Clojure libraries and app code."
+(defn- elem-color
+  "Returns a keyword identifying the color appropriate for the given trace elem.
+  :java-color   All Java elems
+  :repl-color  Any fn in the user or repl* namespaces (i.e. entered at REPL)
+  :clojure-color    Any fn in clojure.* (e.g. clojure.core, clojure.contrib.*)
+  :other-code-color Anything else - i.e. Clojure libraries and app code."
   [elem]
   (if (:java elem)
     (if (utils/re-match? #"^clojure\." (:class elem))
-      :cyan
-      :blue)
-    (cond (nil? (:ns elem)) :yellow
-          (utils/re-match? #"^(user|repl)" (:ns elem)) :yellow
-          (utils/re-match? #"^clojure\." (:ns elem)) :magenta
-          :user-code :green)))
+      :clojure-java-color
+      :java-color)
+    (cond (nil? (:ns elem)) :repl-color
+          (utils/re-match? #"^(user|repl)" (:ns elem)) :repl-color
+          (utils/re-match? #"^clojure\." (:ns elem)) :other-code-color
+          :else :user-code-color)))
 
-(defn source-str [parsed]
+(defn- source-str [parsed]
   (if (and (:file parsed) (:line parsed))
     (str (:file parsed) ":" (:line parsed))
     "(Unknown Source)"))
 
-(defn clojure-method-str [parsed]
+(defn- clojure-method-str [parsed]
   (str (:ns parsed) "/" (:fn parsed) (if (:anon-fn parsed) "[fn]")))
 
-(defn java-method-str [parsed]
+(defn- java-method-str [parsed]
   (str (:class parsed) "." (:method parsed)))
 
-(defn method-str [parsed]
+(defn- method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
 (defn pst-class-on [on color? class]
-  (.append on (colored color? :red (str (.getName class) ": ")))
+  (.append on (colored color? :error-color (str (.getName class) ": ")))
   (.flush on))
 
 (defn pst-message-on [on color? message]
-  (.append on (colored color? :red message))
+  (.append on (colored color? :error-color message))
   (.append on "\n")
   (.flush on))
 
@@ -76,7 +117,7 @@
 
 (defn pst-caused-by-on
   [on color?]
-  (.append on (colored color? :red "Caused by: "))
+  (.append on (colored color? :error-color "Caused by: "))
   (.flush on))
 
 (defn- pst-cause-on
