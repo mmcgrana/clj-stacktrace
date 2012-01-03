@@ -40,6 +40,11 @@
     {:clojure true :ns "user" :fn "eval"
      :file nil :line nil :anon-fn false}]
 
+   ["lamina.core.observable.ConstantObservable" "message" "observable.clj" 198
+    {:clojure true :ns "lamina.core.observable"
+     :fn "lamina.core.observable.ConstantObservable"
+     :file "observable.clj" :line 198 :anon-fn false}]
+   
    ["clojure.lang.Var" "invoke" "Var.java" 123
     {:java true :class "clojure.lang.Var" :method "invoke"
      :file "Var.java" :line 123}]
