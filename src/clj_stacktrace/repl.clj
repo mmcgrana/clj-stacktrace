@@ -116,13 +116,6 @@
   [& [e]]
   (pst-on *out* false (or e *e)))
 
-(defn pst-str
-  "Like pst, but returns a string instead of printing that string to *out*"
-  [& [e]]
-  (let [sw (java.io.StringWriter.)]
-    (pst-on sw false (or e *e))
-    (str sw)))
-
 (defn pst+
   "Like pst, but with ANSI terminal color coding."
   [& [e]]
