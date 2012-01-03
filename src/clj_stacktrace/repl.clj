@@ -25,12 +25,12 @@
   :magenta Anything else - i.e. Clojure libraries and app code."
   [elem]
   (if (:java elem)
-    (if (utils/re-match? #"^clojure\." (:class elem))
+    (if (re-find #"^clojure\." (:class elem))
       :cyan
       :blue)
     (cond (nil? (:ns elem)) :yellow
-          (utils/re-match? #"^(user|repl)" (:ns elem)) :yellow
-          (utils/re-match? #"^clojure\." (:ns elem)) :magenta
+          (re-find #"^(user|repl)" (:ns elem)) :yellow
+          (re-find #"^clojure\." (:ns elem)) :magenta
           :user-code :green)))
 
 (defn source-str [parsed]

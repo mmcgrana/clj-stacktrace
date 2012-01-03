@@ -1,18 +1,19 @@
 (ns clj-stacktrace.core
-  (:require [clj-stacktrace.utils :as utils]))
+  (:require [clojure.string :as string]))
 
 (defn- clojure-code?
   "Returns true if the filename is non-null and indicates a clj source file."
   [class-name file]
-  (or (utils/re-match? #"^user" class-name)
+  (or (re-find #"^user" class-name)
       (= file "NO_SOURCE_FILE")
-      (and file (utils/re-match? #"\.clj$" file))))
+      (and file (re-find #"\.clj$" file))))
 
 (defn- clojure-ns
   "Returns the clojure namespace name implied by the bytecode class name."
   [class-name]
-  (utils/re-gsub #"_" "-" (or (utils/re-get #"([^$]+)\$" class-name 1)
-                              (utils/re-get #"(.+)\.[^.]+$" class-name 1))))
+  (string/replace (or (get (re-find #"([^$]+)\$" class-name) 1)
+                      (get (re-find #"(.+)\.[^.]+$" class-name) 1))
+                  #"_" "-"))
 
 ;; drop everything before and including the first $
 ;; drop everything after and including and the second $
@@ -36,14 +37,14 @@
   "Returns the clojure function name implied by the bytecode class name."
   [class-name]
   (reduce
-   (fn [base-name [pattern sub]] (utils/re-gsub pattern sub base-name))
+   (fn [base-name [pattern sub]] (string/replace base-name pattern sub))
    class-name
    clojure-fn-subs))
 
 (defn- clojure-anon-fn?
   "Returns true if the bytecode class name implies an anonymous inner fn."
   [class-name]
-  (utils/re-match? #"\$.*\$" class-name))
+  (boolean (re-find #"\$.*\$" class-name)))
 
 (defn parse-trace-elem
   "Returns a map of information about the java trace element.
