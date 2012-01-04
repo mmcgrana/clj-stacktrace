@@ -47,6 +47,22 @@
 (defn method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
+(defn- omitter-fn [to-omit]
+  (if (instance? java.util.regex.Pattern to-omit)
+    ;; Curse you, non ifn regexes!
+    (comp (partial re-find to-omit) pr-str)
+    to-omit))
+
+(defn omit
+  "Remove frames matching to-omit, which can be a function or regex."
+  [trace-elems to-omit]
+  (if-let [omit? (omitter-fn to-omit)]
+    (reduce (fn [trace-elems elem]
+              (if (omit? elem)
+                trace-elems
+               (conj trace-elems elem))) [] trace-elems)
+    trace-elems))
+
 (defn pst-class-on [^java.io.Writer on color? ^Class class]
   (.append on ^String (colored color? :red (str (.getName class) ": ")))
   (.flush on))
@@ -80,11 +96,11 @@
   (.flush on))
 
 (defn- pst-cause-on
-  [^java.io.Writer on color? exec source-width]
+  [^java.io.Writer on exec {:keys [source-width to-omit color?]}]
   (pst-caused-by-on on color?)
   (pst-class-on on color? (:class exec))
   (pst-message-on on color? (:message exec))
-  (pst-elems-on on color? (:trimmed-elems exec) source-width)
+  (pst-elems-on on color? (omit (:trimmed-elems exec) to-omit) source-width)
   (if-let [cause (:cause exec)]
     (pst-cause-on on color? cause source-width)))
 
@@ -100,40 +116,28 @@
       (max this-source-width (find-source-width cause))
       this-source-width)))
 
-(defn- omitter-fn [to-omit]
-  (if (instance? java.util.regex.Pattern to-omit)
-    ;; Curse you, non ifn regexes!
-    (partial re-find to-omit)
-    to-omit))
-
-(defn omit
-  "Remove frames matching to-omit, which can be a function or regex."
-  [trace-elems to-omit]
-  (if-let [omit? (omitter-fn to-omit)]
-    (reduce #(if (omit? %)
-               trace-elems
-               (conj trace-elems %)) [] trace-elems)
-    trace-elems))
-
 (defn pst-on
   "Prints to the given Writer on a pretty stack trace for the given exception e,
   ANSI colored if color? is true."
-  [on color? e {:keys [to-omit] :as opts}]
+  [on e {:keys [to-omit color?] :as opts}]
   (let [exec         (parse-exception e)
         source-width (find-source-width exec)
-        color? (or color? (:color opts))]
+        color? (or color? (:color? opts) (:test-color opts))]
     (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
     (pst-elems-on on color? (omit (:trace-elems exec) to-omit) source-width)
     (if-let [cause (:cause exec)]
-      (pst-cause-on on color? cause source-width))))
+      (pst-cause-on on cause
+                    (assoc opts
+                      :source-width source-width
+                      :color? color?)))))
 
 (defn pst
   "Print to *out* a pretty stack trace for an exception, by default *e."
   [& [e & {:as opts}]]
-  (pst-on *out* (:test-color opts) (or e *e) opts))
+  (pst-on *out* (or e *e) opts))
 
 (defn pst+
   "Like pst, but with ANSI terminal color coding."
   [& [e & {:as opts}]]
-  (pst-on *out* true (or e *e) opts))
+  (pst-on *out* (or e *e) (assoc opts :color? true)))
