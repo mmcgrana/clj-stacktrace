@@ -1,5 +1,5 @@
 (ns clj-stacktrace.repl
-  (:use clj-stacktrace.core)
+  (:use [clj-stacktrace.core :only [parse-exception]])
   (:require [clj-stacktrace.utils :as utils]))
 
 (def color-codes
@@ -100,24 +100,28 @@
       (max this-source-width (find-source-width cause))
       this-source-width)))
 
-(defn- ommiter-fn [to-omit]
+(defn- omitter-fn [to-omit]
   (if (instance? java.util.regex.Pattern to-omit)
     ;; Curse you, non ifn regexes!
     (partial re-find to-omit)
     to-omit))
 
-(defn omit [trace-elems to-omit]
-  (if-let [omit? (omit-fn to-omit)]
+(defn omit
+  "Remove frames matching to-omit, which can be a function or regex."
+  [trace-elems to-omit]
+  (if-let [omit? (omitter-fn to-omit)]
     (reduce #(if (omit? %)
                trace-elems
                (conj trace-elems %)) [] trace-elems)
     trace-elems))
 
-(defn pst-on [on color? e {:keys [to-omit] :as opts}]
+(defn pst-on
   "Prints to the given Writer on a pretty stack trace for the given exception e,
   ANSI colored if color? is true."
+  [on color? e {:keys [to-omit] :as opts}]
   (let [exec         (parse-exception e)
-        source-width (find-source-width exec)]
+        source-width (find-source-width exec)
+        color? (or color? (:color opts))]
     (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
     (pst-elems-on on color? (omit (:trace-elems exec) to-omit) source-width)

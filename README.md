@@ -7,6 +7,8 @@ For example, to print a nice stack trace in a REPL:
     => (use 'clj-stacktrace.repl)
     => ("foo")
     java.lang.ClassCastException: java.lang.String cannot be cast to clojure.lang.IFn (NO_SOURCE_FILE:0)
+    => (pst)
+    java.lang.ClassCastException: java.lang.String cannot be cast to clojure.lang.IFn (NO_SOURCE_FILE:0)
            Compiler.java:5440 clojure.lang.Compiler.eval
            Compiler.java:5391 clojure.lang.Compiler.eval
                 core.clj:2382 clojure.core/eval
@@ -25,18 +27,24 @@ For example, to print a nice stack trace in a REPL:
              NO_SOURCE_FILE:2 user/eval100
            Compiler.java:5424 clojure.lang.Compiler.eval
 
-
 In stack traces printed by `pst`:
 
-* Java methods are described with the usual `name.space.ClassName.methodName` convention and Clojure functions with their own `name.space/function-name` convention.
-* Anonymous clojure functions are denoted by adding an `[fn]` to their enclosing, named function.
+* Java methods are described with the usual
+  `name.space.ClassName.methodName` convention and Clojure functions
+  with their own `name.space/function-name` convention.
+* Anonymous clojure functions are denoted by adding an `[fn]` to their
+  enclosing, named function.
 * "Caused by" cascades are shown as in regular java stack traces.
 * Elements are vertically aligned for better readability.
 * Printing is directed to `*out*`.
 
-If you want to direct the printing to somewhere other than `*out*`, either use `pst-on` to specify the output location or `pst-str` to capture the printing as a string.
+If you want to direct the printing to somewhere other than `*out*`,
+either use `pst-on` to specify the output location or `pst-str` to
+capture the printing as a string.
 
-The library also offers an API for programatically 'parsing' exceptions. This API is used internal for `pst` and can be used to e.g. improve development tools. Try for example:
+The library also offers an API for programatically 'parsing'
+exceptions. This API is used internal for `pst` and can be used to
+e.g. improve development tools. Try for example:
 
 ```clj
 (use 'clj-stacktrace.core)
@@ -46,7 +54,7 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
     (parse-exception e)))
 ```
 
-If you use Leiningen, you can install clj-stacktrace on a per-user basis:
+If you use Leiningen, you can install clj-stacktrace on a user-level basis:
 
     $ lein plugin install clj-stacktrace 0.2.4
 
