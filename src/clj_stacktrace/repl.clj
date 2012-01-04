@@ -100,19 +100,20 @@
       (max this-source-width (find-source-width cause))
       this-source-width)))
 
-(defn- omit-frame? [elem omitter]
-  (if (ifn? omitter)
-    (omitter elem)
-    (re-find omitter (str elem))))
+(defn- ommiter-fn [to-omit]
+  (if (instance? java.util.regex.Pattern to-omit)
+    ;; Curse you, non ifn regexes!
+    (partial re-find to-omit)
+    to-omit))
 
-(defn- omit [trace-elems to-omit]
-  (if (coll? to-omit)
-    (remove (fn [elem]
-              (some (partial omit-frame? elem) to-omit))
-            trace-elems)
-    (omit trace-elems [to-omit])))
+(defn omit [trace-elems to-omit]
+  (if-let [omit? (omit-fn to-omit)]
+    (reduce #(if (omit? %)
+               trace-elems
+               (conj trace-elems %)) [] trace-elems)
+    trace-elems))
 
-(defn pst-on [on color? e {:keys [to-omit]}]
+(defn pst-on [on color? e {:keys [to-omit] :as opts}]
   "Prints to the given Writer on a pretty stack trace for the given exception e,
   ANSI colored if color? is true."
   (let [exec         (parse-exception e)
