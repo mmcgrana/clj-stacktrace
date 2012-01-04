@@ -5,7 +5,7 @@
 (defn- hook-form [form project]
   `(do (alter-var-root (resolve '~'clojure.stacktrace/print-cause-trace)
                        (constantly (fn [e#]
-                                     (@(resolve '~'project-pst) e#
+                                     (@(resolve '~'pst) e#
                                       ~(:clj-stacktrace project)))))
        ~form))
 
