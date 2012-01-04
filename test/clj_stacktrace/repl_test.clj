@@ -26,8 +26,8 @@
 (deftest test-omit
   (with-cascading-exception e
     (is (not (re-find #"repl-test" (with-out-str
-                                     (pst e :to-omit #"repl-test")))))
+                                     (pst e :omit #"repl-test")))))
     (is (not (re-find #"Compiler.java"
                       (with-out-str
-                        (pst e :to-omit (fn [e]
-                                          (= "Compiler.java" (:file e))))))))))
+                        (pst e :omit (fn [e]
+                                       (= "Compiler.java" (:file e))))))))))

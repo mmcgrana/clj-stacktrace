@@ -1,6 +1,6 @@
 (ns clj-stacktrace.repl
-  (:use [clj-stacktrace.core :only [parse-exception]])
-  (:require [clj-stacktrace.utils :as utils]))
+  (:use [clj-stacktrace.core :only [parse-exception]]
+        [clj-stacktrace.utils :only [omit-frames fence rjust]]))
 
 (def color-codes
   {:red     "\033[31m"
@@ -47,22 +47,6 @@
 (defn method-str [parsed]
   (if (:java parsed) (java-method-str parsed) (clojure-method-str parsed)))
 
-(defn- omitter-fn [to-omit]
-  (if (instance? java.util.regex.Pattern to-omit)
-    ;; Curse you, non ifn regexes!
-    (comp (partial re-find to-omit) pr-str)
-    to-omit))
-
-(defn omit
-  "Remove frames matching to-omit, which can be a function or regex."
-  [trace-elems to-omit]
-  (if-let [omit? (omitter-fn to-omit)]
-    (reduce (fn [trace-elems elem]
-              (if (omit? elem)
-                trace-elems
-               (conj trace-elems elem))) [] trace-elems)
-    trace-elems))
-
 (defn pst-class-on [^java.io.Writer on color? ^Class class]
   (.append on ^String (colored color? :red (str (.getName class) ": ")))
   (.flush on))
@@ -75,16 +59,14 @@
 (defn pst-elem-str
   [color? parsed-elem print-width]
   (colored color? (elem-color parsed-elem)
-           (str (utils/rjust print-width (source-str parsed-elem))
+           (str (rjust print-width (source-str parsed-elem))
                 " " (method-str parsed-elem))))
 
 (defn pst-elems-on
   [^java.io.Writer on color? parsed-elems & [source-width]]
   (let [print-width (+ 6 (or source-width
-                             (utils/fence
-                              (sort
-                               (map #(.length ^String %)
-                                    (map source-str parsed-elems))))))]
+                             (fence (sort (for [elem parsed-elems]
+                                            (count (source-str elem)))))))]
     (doseq [parsed-elem parsed-elems]
       (.append on ^String (pst-elem-str color? parsed-elem print-width))
       (.append on "\n")
@@ -96,11 +78,12 @@
   (.flush on))
 
 (defn- pst-cause-on
-  [^java.io.Writer on exec {:keys [source-width to-omit color?]}]
+  [^java.io.Writer on exec {:keys [source-width omit color?]}]
   (pst-caused-by-on on color?)
   (pst-class-on on color? (:class exec))
   (pst-message-on on color? (:message exec))
-  (pst-elems-on on color? (omit (:trimmed-elems exec) to-omit) source-width)
+  (pst-elems-on on color? (omit-frames (:trimmed-elems exec) omit)
+                source-width)
   (if-let [cause (:cause exec)]
     (pst-cause-on on color? cause source-width)))
 
@@ -110,8 +93,7 @@
   [excp]
   (let [this-source-width (->> (:trace-elems excp)
                                (map (comp count source-str))
-                               (sort)
-                               (utils/fence))]
+                               (sort) (fence))]
     (if-let [cause (:cause excp)]
       (max this-source-width (find-source-width cause))
       this-source-width)))
@@ -119,13 +101,13 @@
 (defn pst-on
   "Prints to the given Writer on a pretty stack trace for the given exception e,
   ANSI colored if color? is true."
-  [on e {:keys [to-omit color?] :as opts}]
+  [on e {:keys [omit color?] :as opts}]
   (let [exec         (parse-exception e)
         source-width (find-source-width exec)
         color? (or color? (:color? opts) (:test-color opts))]
     (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
-    (pst-elems-on on color? (omit (:trace-elems exec) to-omit) source-width)
+    (pst-elems-on on color? (omit-frames (:trace-elems exec) omit) source-width)
     (if-let [cause (:cause exec)]
       (pst-cause-on on cause
                     (assoc opts
