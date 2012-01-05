@@ -37,3 +37,19 @@
         q3  (quartile3 coll)
         iqr (- q3 q1)]
     (int (+ q3 (/ (* 3 iqr) 2)))))
+
+(defn- omitter-fn [to-omit]
+  (if (instance? java.util.regex.Pattern to-omit)
+    ;; Curse you, non ifn regexes!
+    (comp (partial re-find to-omit) pr-str)
+    to-omit))
+
+(defn omit-frames
+  "Remove frames matching to-omit, which can be a function or regex."
+  [trace-elems to-omit]
+  (if-let [omit? (omitter-fn to-omit)]
+    (reduce (fn [trace-elems elem]
+              (if (omit? elem)
+                trace-elems
+               (conj trace-elems elem))) [] trace-elems)
+    trace-elems))
