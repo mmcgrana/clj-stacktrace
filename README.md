@@ -39,8 +39,7 @@ In stack traces printed by `pst`:
 * Printing is directed to `*out*`.
 
 If you want to direct the printing to somewhere other than `*out*`,
-either use `pst-on` to specify the output location or `pst-str` to
-capture the printing as a string.
+either use `pst-on` to specify the output location.
 
 The library also offers an API for programatically 'parsing'
 exceptions. This API is used internal for `pst` and can be used to
