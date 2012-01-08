@@ -31,3 +31,20 @@
                       (with-out-str
                         (pst e :omit (fn [e]
                                        (= "Compiler.java" (:file e))))))))))
+
+;; Color configuration tests
+                                
+(defn starts-with? [color s]
+  (.startsWith s (color-codes color))) 
+
+(deftest pst-uses-no-color
+  (with-cascading-exception ex
+    (is (not (starts-with? :red (with-out-str (pst ex)))))))
+
+(deftest defaults-to-red-exceptions
+  (with-cascading-exception ex
+    (is (starts-with? :red (with-out-str (pst+ ex))))))
+
+(deftest configure-colors
+  (with-cascading-exception ex
+    (is (starts-with? :blue (with-out-str (pst+ ex :error-color :blue ))))))
