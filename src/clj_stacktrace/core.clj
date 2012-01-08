@@ -76,7 +76,7 @@
         :method (.getMethodName elem)))))
 
 (defn parse-trace-elems
-  "Returns a seq of maps providing usefull information about the java stack
+  "Returns a seq of maps providing useful information about the java stack
   trace elements. See parse-trace-elem."
   [elems]
   (map parse-trace-elem elems))
@@ -110,7 +110,7 @@
       base)))
 
 (defn parse-exception
-  "Returns a Clojure map providing usefull informaiton about the exception.
+  "Returns a Clojure map providing useful information about the exception.
   The map has keys
   :class        Class of the exception.
   :message      Regular exception message string.
