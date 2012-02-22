@@ -46,7 +46,22 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
     (parse-exception e)))
 ```
 
-If you use Leiningen, you can install clj-stacktrace on a per-user basis:
+## Leiningen
+
+If you use Leiningen, you can install clj-stacktrace on a per-user basis.
+
+For Leiningen 2.x, add the following to `~/.lein/profiles`:
+
+```clj
+{:user {:dependencies {clj-stacktrace "0.2.4"}
+        :injections [(let [orig (ns-resolve (doto 'clojure.stacktrace require)
+                                            'print-cause-trace)
+                           new (ns-resolve (doto 'clj-stacktrace.repl require)
+                                           'pst)]
+                       (alter-var-root orig (constantly @new)))]
+```
+
+For Leiningen 1.x:
 
     $ lein plugin install clj-stacktrace 0.2.4
 
