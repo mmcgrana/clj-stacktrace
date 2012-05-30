@@ -50,7 +50,7 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 
 If you use Leiningen, you can install clj-stacktrace on a per-user basis.
 
-For Leiningen 2.x, add the following to `~/.lein/profiles`:
+For Leiningen 2.x, add the following to `~/.lein/profiles.clj`:
 
 ```clj
 {:user {:dependencies {clj-stacktrace "0.2.4"}
@@ -58,7 +58,7 @@ For Leiningen 2.x, add the following to `~/.lein/profiles`:
                                             'print-cause-trace)
                            new (ns-resolve (doto 'clj-stacktrace.repl require)
                                            'pst)]
-                       (alter-var-root orig (constantly @new)))]
+                       (alter-var-root orig (constantly @new)))]}}
 ```
 
 For Leiningen 1.x:
