@@ -53,7 +53,7 @@ If you use Leiningen, you can install clj-stacktrace on a per-user basis.
 For Leiningen 2.x, add the following to `~/.lein/profiles.clj`:
 
 ```clj
-{:user {:dependencies {clj-stacktrace "0.2.4"}
+{:user {:dependencies [[clj-stacktrace "0.2.5"]]
         :injections [(let [orig (ns-resolve (doto 'clojure.stacktrace require)
                                             'print-cause-trace)
                            new (ns-resolve (doto 'clj-stacktrace.repl require)
@@ -63,7 +63,7 @@ For Leiningen 2.x, add the following to `~/.lein/profiles.clj`:
 
 For Leiningen 1.x:
 
-    $ lein plugin install clj-stacktrace 0.2.4
+    $ lein plugin install clj-stacktrace 0.2.5
 
 Add this to your `~/.lein/init.clj` file:
 
@@ -81,4 +81,6 @@ clj-stacktrace to be used in the repl and swank tasks.
 
 ## License
 
-Copyright © 2009-2011 Mark McGranaghan and released under an MIT license.
+Copyright © 2009-2012 Mark McGranaghan and contributors.
+
+Released under an MIT license.

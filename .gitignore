@@ -2,3 +2,4 @@
 *.xml
 /.lein-failures
 /.lein-deps-sum
+/target
