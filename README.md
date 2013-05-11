@@ -4,7 +4,7 @@ A library for creating more readable stacktraces in Clojure programs.
 
 For example, to print a nice stack trace in a REPL:
 
-    => (use 'clj-stacktrace.repl)
+    => (refer 'clj-stacktrace.repl)
     => ("foo")
     java.lang.ClassCastException: java.lang.String cannot be cast to clojure.lang.IFn (NO_SOURCE_FILE:0)
            Compiler.java:5440 clojure.lang.Compiler.eval
