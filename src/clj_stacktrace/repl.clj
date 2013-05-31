@@ -96,8 +96,8 @@
                                (map (comp count source-str))
                                (sort)
                                (utils/fence))]
-    (if-let [cause (:cause excp)]
-      (max this-source-width (find-source-width cause))
+    (if (not-empty (-> excp :cause :trace-elems))
+      (max this-source-width (find-source-width (:cause excp)))
       this-source-width)))
 
 (defn pst-on [on color? e]
