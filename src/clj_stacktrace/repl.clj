@@ -33,6 +33,14 @@
           (re-find #"^clojure\." (:ns elem)) :magenta
           :user-code :green)))
 
+(defn- guarded-fence [coll]
+  (case (count coll)
+    0 0
+    1 (first coll)
+    2 (quot (+ (first  coll)
+               (second coll)) 2)
+    (utils/fence coll)))
+
 (defn source-str [parsed]
   (if (and (:file parsed) (:line parsed))
     (str (:file parsed) ":" (:line parsed))
@@ -65,7 +73,7 @@
 (defn pst-elems-on
   [^java.io.Writer on color? parsed-elems & [source-width]]
   (let [print-width (+ 6 (or source-width
-                             (utils/fence
+                             (guarded-fence
                               (sort
                                (map #(.length ^String %)
                                     (map source-str parsed-elems))))))]
@@ -95,7 +103,7 @@
   (let [this-source-width (->> (:trace-elems excp)
                                (map (comp count source-str))
                                (sort)
-                               (utils/fence))]
+                               (guarded-fence))]
     (if (not-empty (-> excp :cause :trace-elems))
       (max this-source-width (find-source-width (:cause excp)))
       this-source-width)))
