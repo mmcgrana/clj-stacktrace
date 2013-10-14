@@ -48,12 +48,11 @@ The library also offers an API for programatically 'parsing' exceptions. This AP
 
 ## Leiningen
 
-If you use Leiningen, you can install clj-stacktrace on a per-user basis.
-
-For Leiningen 2.x, add the following to `~/.lein/profiles.clj`:
+If you use Leiningen, you can install clj-stacktrace on a user-wide
+basis. Just add the following to `~/.lein/profiles.clj`:
 
 ```clj
-{:user {:dependencies [[clj-stacktrace "0.2.5"]]
+{:user {:dependencies [[clj-stacktrace "0.2.7"]]
         :injections [(let [orig (ns-resolve (doto 'clojure.stacktrace require)
                                             'print-cause-trace)
                            new (ns-resolve (doto 'clj-stacktrace.repl require)
@@ -61,26 +60,13 @@ For Leiningen 2.x, add the following to `~/.lein/profiles.clj`:
                        (alter-var-root orig (constantly @new)))]}}
 ```
 
-For Leiningen 1.x:
-
-    $ lein plugin install clj-stacktrace 0.2.5
-
-Add this to your `~/.lein/init.clj` file:
-
-```clj
-(try (require 'leiningen.hooks.clj-stacktrace-test)
-     (def settings {:repl-options [:init (require 'clj-stacktrace.repl)
-                                   :caught 'clj-stacktrace.repl/pst+]})
-  (catch java.io.FileNotFoundException _))
-```
-
-The hook will enable clj-stacktrace to be used across all the projects
-you work on in clojure.test and other things that use the
-clojure.stacktrace library. The `:repl-options` settings will cause
-clj-stacktrace to be used in the repl and swank tasks.
+The `:injections` clause replaces the built-in stack trace printing
+with enhanced clj-stacktrace version; you can leave it out if you plan
+on invoking clj-stacktrace functions directly or are using tools which
+are already clj-stacktrace-aware.
 
 ## License
 
-Copyright © 2009-2012 Mark McGranaghan and contributors.
+Copyright © 2009-2013 Mark McGranaghan and contributors.
 
 Released under an MIT license.
