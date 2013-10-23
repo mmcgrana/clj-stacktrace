@@ -57,7 +57,7 @@ basis. Just add the following to `~/.lein/profiles.clj`:
                                             'print-cause-trace)
                            new (ns-resolve (doto 'clj-stacktrace.repl require)
                                            'pst)]
-                       (alter-var-root orig (constantly @new)))]}}
+                       (alter-var-root orig (constantly (deref new))))]}}
 ```
 
 The `:injections` clause replaces the built-in stack trace printing
