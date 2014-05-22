@@ -109,9 +109,12 @@
       this-source-width)))
 
 (defn pst-on [on color? e]
-  "Prints to the given Writer on a pretty stack trace for the given exception e,
+  "Prints to the given Writer on a pretty stack trace for e which can be an exception
+  or already parsed exception (clj-stacktrace.core/parse-exception).
   ANSI colored if color? is true."
-  (let [exec         (parse-exception e)
+  (let [exec (if (instance? Throwable e)
+               (parse-exception e)
+               e)
         source-width (find-source-width exec)]
     (pst-class-on on color? (:class exec))
     (pst-message-on on color? (:message exec))
@@ -120,7 +123,7 @@
       (pst-cause-on on color? cause source-width))))
 
 (defn pst
-  "Print to *out* a pretty stack trace for an exception, by default *e."
+  "Print to *out* a pretty stack trace for a (parsed) exception, by default *e."
   [& [e]]
   (pst-on *out* false (or e *e)))
 
