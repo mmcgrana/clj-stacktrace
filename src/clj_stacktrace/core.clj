@@ -79,19 +79,23 @@
   "Returns a seq of maps providing usefull information about the java stack
   trace elements. See parse-trace-elem."
   [elems]
-  (map parse-trace-elem elems))
+  (mapv parse-trace-elem elems))
 
 (defn- trim-redundant
   "Returns the portion of the tail of causer-elems that is not duplicated in
   the tail of caused-elems. This corresponds to the \"...26 more\" that you
-  see at the bottom of regular trace dumps."
+  see at the bottom of regular trace dumps.
+  If an exception is triggered by us, just returns the original causes as is.
+  Better have a less cosmetic stack trace than an exception hidding the real one"
   [causer-parsed-elems caused-parsed-elems]
-  (loop [rcauser-parsed-elems (reverse causer-parsed-elems)
-         rcaused-parsed-elems (reverse caused-parsed-elems)]
-    (if-let [rcauser-bottom (first rcauser-parsed-elems)]
-      (if (= rcauser-bottom (first rcaused-parsed-elems))
-        (recur (next rcauser-parsed-elems) (next rcaused-parsed-elems))
-        (reverse rcauser-parsed-elems)))))
+  (try
+    (loop [rcauser-parsed-elems (reverse causer-parsed-elems)
+           rcaused-parsed-elems (reverse caused-parsed-elems)]
+      (if-let [rcauser-bottom (first rcauser-parsed-elems)]
+        (if (= rcauser-bottom (first rcaused-parsed-elems))
+          (recur (next rcauser-parsed-elems) (next rcaused-parsed-elems))
+          (reverse rcauser-parsed-elems))))
+    (catch Exception e# caused-parsed-elems)))
 
 (defn- parse-cause-exception
   "Like parse-exception, but for causing exceptions. The returned map has all
@@ -104,10 +108,11 @@
         base {:class         (class causer-e)
               :message       (.getMessage causer-e)
               :trace-elems   parsed-elems
-              :trimmed-elems (trim-redundant parsed-elems caused-parsed-elems)}]
+              :trimmed-elems (into [] (trim-redundant parsed-elems caused-parsed-elems))}]
     (if-let [cause (.getCause causer-e)]
       (assoc base :cause (parse-cause-exception cause parsed-elems))
       base)))
+
 
 (defn parse-exception
   "Returns a Clojure map providing usefull informaiton about the exception.
