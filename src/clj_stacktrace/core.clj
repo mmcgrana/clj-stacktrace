@@ -79,7 +79,7 @@
   "Returns a seq of maps providing usefull information about the java stack
   trace elements. See parse-trace-elem."
   [elems]
-  (mapv parse-trace-elem elems))
+  (map parse-trace-elem elems))
 
 (defn- trim-redundant
   "Returns the portion of the tail of causer-elems that is not duplicated in
@@ -108,7 +108,7 @@
         base {:class         (class causer-e)
               :message       (.getMessage causer-e)
               :trace-elems   parsed-elems
-              :trimmed-elems (into [] (trim-redundant parsed-elems caused-parsed-elems))}]
+              :trimmed-elems (trim-redundant parsed-elems caused-parsed-elems)}]
     (if-let [cause (.getCause causer-e)]
       (assoc base :cause (parse-cause-exception cause parsed-elems))
       base)))
