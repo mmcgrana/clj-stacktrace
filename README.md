@@ -52,7 +52,7 @@ If you use Leiningen, you can install clj-stacktrace on a user-wide
 basis. Just add the following to `~/.lein/profiles.clj`:
 
 ```clj
-{:user {:dependencies [[clj-stacktrace "0.2.7"]]
+{:user {:dependencies [[clj-stacktrace "0.2.8"]]
         :injections [(let [orig (ns-resolve (doto 'clojure.stacktrace require)
                                             'print-cause-trace)
                            new (ns-resolve (doto 'clj-stacktrace.repl require)
