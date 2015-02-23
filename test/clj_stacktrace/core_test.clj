@@ -20,6 +20,14 @@
     {:clojure true :ns "foo.bar" :fn "biz-bat?"
      :file "bar.clj" :line 456 :anon-fn true}]
 
+   ["foo.bar$biz_SINGLEQUOTE__bar__448" "invoke" "bar.clj" 456
+    {:clojure true :ns "foo.bar" :fn "biz'-bar"
+     :file "bar.clj" :line 456 :anon-fn false}]
+
+   ["foo.bar$biz_DOT_bat__448" "invoke" "bar.clj" 456
+    {:clojure true :ns "foo.bar" :fn "biz.bat"
+     :file "bar.clj" :line 456 :anon-fn false}]
+
    ["foo.bar$repl$fn__5629.invoke" "invoke" "bar.clj" 456
     {:clojure true :ns "foo.bar" :fn "repl"
      :file "bar.clj" :line 456 :anon-fn true}]

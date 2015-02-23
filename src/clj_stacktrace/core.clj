@@ -20,18 +20,34 @@
 ;; drop any __xyz suffixes
 ;; sub _PLACEHOLDER_ for the corresponding char
 (def clojure-fn-subs
-  [[#"^[^$]*\$" ""]
-   [#"\$.*"    ""]
-   [#"__\d+.*"  ""]
-   [#"_QMARK_"  "?"]
-   [#"_BANG_"   "!"]
-   [#"_PLUS_"   "+"]
-   [#"_GT_"     ">"]
-   [#"_LT_"     "<"]
-   [#"_EQ_"     "="]
-   [#"_STAR_"   "*"]
-   [#"_SLASH_"  "/"]
-   [#"_"        "-"]])
+  [[#"^[^$]*\$"       ""]
+   [#"\$.*"           ""]
+   [#"__\d+.*"        ""]
+   [#"_AMPERSAND_"    "&"]
+   [#"_BANG_"         "!"]
+   [#"_BAR_"          "|"]
+   [#"_BSLASH_"       "\\"]
+   [#"_CARET_"        "^"]
+   [#"_CIRCA_"        "@"]
+   [#"_COLON_"        ":"]
+   [#"_DOT_"          "."]
+   [#"_DOUBLEQUOTE_"  "\""]
+   [#"_EQ_"           "="]
+   [#"_GT_"           ">"]
+   [#"_LBRACE_"       "{"]
+   [#"_LBRACK_"       "["]
+   [#"_LT_"           "<"]
+   [#"_PERCENT_"      "%"]
+   [#"_PLUS_"         "+"]
+   [#"_QMARK_"        "?"]
+   [#"_RBRACE_"       "}"]
+   [#"_RBRACK_"       "]"]
+   [#"_SHARP_"        "#"]
+   [#"_SINGLEQUOTE_"  "'"]
+   [#"_SLASH_"        "/"]
+   [#"_STAR_"         "*"]
+   [#"_TILDE_"        "~"]
+   [#"_"              "-"]])
 
 (defn- clojure-fn
   "Returns the clojure function name implied by the bytecode class name."
